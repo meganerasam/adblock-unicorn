@@ -19,7 +19,6 @@
       <div class="sidebar">
         <div>
           <h2>Menu</h2>
-          <!-- Sidebar Links with Specific Paths -->
           <ul>
             <li>
               <a href="#/guide" id="guideLink">
@@ -43,16 +42,6 @@
         <!-- Guide Tab (default visible) -->
         <div id="guideContent" class="tab-content" style="display: block">
           <h1>Guide</h1>
-          <!-- Pause Active Container -->
-          <div id="pauseActiveGuide" class="pause-active" style="display: none">
-            <div class="header-active">
-              <h3>Extension Currently Paused</h3>
-            </div>
-            <div class="countdown-container">
-              <span id="pauseCountdownGuide">00:00</span>
-            </div>
-          </div>
-          <!-- Welcome Section -->
           <div class="guide-section">
             <h2>Welcome to Ad Block Unicorn!</h2>
             <p>
@@ -67,7 +56,6 @@
             </p>
           </div>
           <hr />
-          <!-- How It Works Section -->
           <div class="guide-section">
             <h2>How It Works</h2>
             <p>
@@ -82,7 +70,6 @@
             </p>
           </div>
           <hr />
-          <!-- Help Us Improve Section -->
           <div class="guide-section">
             <h2>Help Us Improve the Extension</h2>
             <p>
@@ -92,7 +79,7 @@
             </p>
             <p>
               <a
-                href="https://forms.gle/4H68XaQozjdUGMCu8"
+                href="http://adblock-unicorn.com"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -106,27 +93,11 @@
         <!-- Websites Tab -->
         <div id="websitesContent" class="tab-content" style="display: none">
           <h1>Websites</h1>
-          <!-- Pause Active Container -->
-          <div
-            id="pauseActiveWebsites"
-            class="pause-active"
-            style="display: none"
-          >
-            <div class="header-active">
-              <h3>Extension Currently Paused</h3>
-            </div>
-            <div class="countdown-container">
-              <span id="pauseCountdownWebsites">00:00</span>
-            </div>
-          </div>
-
           <p>
             Manage the domains that you trust and prefer not to have blocked by
             Ad Block Unicorn. Whitelisted sites will bypass ad blocking,
             ensuring seamless access.
           </p>
-
-          <!-- Whitelisted Domains Section -->
           <div class="websites-menu">
             <div class="title-row">
               <h2>Whitelisted domains</h2>
@@ -150,14 +121,11 @@
                 </tr>
               </thead>
               <tbody id="whitelistedSitesTableBody">
-                <!-- Rendered via JS; if no whitelisted website added, a message row will be shown -->
+                <!-- Populated via JavaScript -->
               </tbody>
             </table>
           </div>
-
           <hr />
-
-          <!-- Blocked Domains Section -->
           <div class="websites-menu">
             <div class="title-row">
               <h2>Blocked domains</h2>
@@ -181,7 +149,7 @@
                 </tr>
               </thead>
               <tbody id="blockedSitesTableBody">
-                <!-- Rendered via JS; if no blocked website added, a message row will be shown -->
+                <!-- Populated via JavaScript -->
               </tbody>
             </table>
           </div>
@@ -190,41 +158,10 @@
         <!-- Settings Tab -->
         <div id="settingsContent" class="tab-content" style="display: none">
           <h1>Settings</h1>
-
-          <!-- Pause Active Container -->
-          <div
-            id="pauseActiveSettings"
-            class="pause-active"
-            style="display: none"
-          >
-            <div class="header-active">
-              <h3>Extension Currently Paused</h3>
-            </div>
-            <div class="countdown-container">
-              <span id="pauseCountdownSettings">00:00</span>
-            </div>
-          </div>
-
           <p>
             Configure your preferences for ad blocking. Toggle features on or
-            off, pause the extension temporarily, or reset all settings to
-            default.
+            off, or reset all settings to default.
           </p>
-
-          <div class="option">
-            <div class="description">
-              <h2><i class="fas fa-pause-circle"></i> Pause Extension</h2>
-              <p>
-                Temporarily suspend the extension's functionality for 1 hour.
-              </p>
-            </div>
-            <div class="toggle-switch">
-              <input type="checkbox" id="pauseToggle" />
-              <label for="pauseToggle"></label>
-              <span id="pauseToggleLabel">OFF</span>
-            </div>
-          </div>
-
           <div class="option">
             <div class="description">
               <h2><i class="fas fa-shield-alt"></i> Ad‑Blocking</h2>
@@ -239,7 +176,6 @@
               <span id="adBlockingToggleLabel">ON</span>
             </div>
           </div>
-
           <div class="option">
             <div class="description">
               <h2><i class="fas fa-robot"></i> Auto close popups</h2>
@@ -254,7 +190,6 @@
               <span id="autoCloseToggleLabel">ON</span>
             </div>
           </div>
-
           <div class="option">
             <div class="description">
               <h2>
@@ -271,7 +206,6 @@
               <span id="phishingToggleLabel">ON</span>
             </div>
           </div>
-
           <div class="option">
             <div class="description">
               <h2><i class="fas fa-undo"></i> Reset Extension</h2>
@@ -346,7 +280,7 @@
       </div>
     </div>
 
-    <!-- New Dialog for Reset Confirmation -->
+    <!-- Dialog for Reset Confirmation -->
     <div id="resetConfirmDialog" class="dialog" style="display: none">
       <div class="dialog-content">
         <span class="dialog-close" id="resetConfirmDialogClose">&times;</span>
