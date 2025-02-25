@@ -2,269 +2,142 @@
    New Color Palette & Global Variables
 ========================================================= */
 :root {
-    /* Body and Background */
-    --color-body-bg: #2f3e46;
-    --color-body-text: #cad2c5;
-  
-    /* Header */
-    --color-header-bg: #354f52;
-    --color-header-text: #cad2c5;
-    --color-header-icon: #cad2c5;
-  
-    /* Notification Banner */
-    --color-notification-bg: #84a98c;
-    --color-notification-text: #354f52;
-  
-    /* Toggle Switch */
-    --color-toggle-bg: #52796f;
-    --color-toggle-circle: #cad2c5;
-    --color-toggle-checked-bg: #84a98c;
-  
-    /* Extension Status Background */
-    --color-extension-active-bg: #354f52;
-  
-    /* Active Status Colors */
-    --color-active-icon: #84a98c;
-    --color-active-carousel-button: #84a98c;
-    --color-active-carousel-text: #cad2c5;
-    --color-active-button-bg: #52796f;
-    --color-active-button-hover: #84a98c;
-  
-    /* General Button Colors */
-    --color-button-bg: #52796f;
-    --color-button-hover: #84a98c;
-  
-    /* Tooltip Colors */
-    --color-tooltip-bg: #2f3e46;
-    --color-tooltip-text: #cad2c5;
-    --color-tooltip-arrow: #2f3e46;
-  
-    --font-tooltip-size: 12px;
-  }
-  
-  /* =====================================================
-     Basic Reset & Body
-  ========================================================= */
-  body {
-    width: 400px;
-    font-family: Arial, sans-serif;
-    background-color: var(--color-body-bg);
-    color: var(--color-body-text);
-    margin: 0;
-    padding: 0;
-    font-size: 13px;
-  }
-  
-  /* =====================================================
-     Header
-  ========================================================= */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    background-color: var(--color-header-bg);
-  }
-  
-  .header img {
-    width: 30px;
-    height: 30px;
-  }
-  
-  .header .site-name {
-    font-size: 16px;
-    margin-left: 10px;
-    flex-grow: 1;
-    text-align: center;
-    color: var(--color-header-text);
-  }
-  
-  .header .settings-icon {
-    font-size: 14px;
-    cursor: pointer;
-    color: var(--color-header-icon);
-  }
-  
-  /* =====================================================
-     Header Icons with Tooltips
-  ========================================================= */
-  .header-icons {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
-  
-  .tooltip {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    width: max-content;
-    background-color: var(--color-tooltip-bg);
-    color: var(--color-tooltip-text);
-    text-align: center;
-    border-radius: 5px;
-    padding: 5px 8px;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    white-space: nowrap;
-    font-size: var(--font-tooltip-size);
-  }
-  
-  .tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: var(--color-tooltip-bg) transparent transparent transparent;
-  }
-  
-  .tooltip:hover .tooltiptext,
-  .tooltip:focus-within .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-  }
-  
-  /* =====================================================
-     Main Content
-  ========================================================= */
-  .content {
-    padding: 20px;
-  }
-  
-  /* =====================================================
-     Phishing Warning Container
-  ========================================================= */
-  #phishingWarningContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 20px;
-    border-radius: 5px;
-    margin: 20px 0;
-  }
-  
-  #phishingWarningContainer i {
-    margin-bottom: 10px;
-    font-size: 24px;
-  }
-  
-  #phishingMessage {
-    text-align: center;
-    font-size: 14px;
-  }
-  
-  /* =====================================================
-     Toggle Switch
-  ========================================================= */
-  .toggle-switch {
-    --toggle-width: 30px;
-    --toggle-height: 16px;
-    position: relative;
-    display: inline-block;
-    width: var(--toggle-width);
-    height: var(--toggle-height);
-  }
-  
-  .toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--color-toggle-bg);
-    transition: 0.4s;
-    border-radius: calc(var(--toggle-height) / 2);
-  }
-  
-  .slider:before {
-    position: absolute;
-    content: "";
-    width: calc(var(--toggle-height) - 4px);
-    height: calc(var(--toggle-height) - 4px);
-    left: 2px;
-    bottom: 2px;
-    background-color: var(--color-toggle-circle);
-    transition: 0.4s;
-    border-radius: 50%;
-  }
-  
-  input:checked + .slider {
-    background-color: var(--color-toggle-checked-bg);
-  }
-  
-  input:checked + .slider:before {
-    transform: translateX(calc(var(--toggle-width) - var(--toggle-height)));
-  }
-  
-  /* =====================================================
-     Extension Status (Active Only)
-  ========================================================= */
-  .extension-status {
-    background-color: var(--color-extension-active-bg);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .extension-status .table-status .button button:hover {
-    background-color: var(--color-button-hover);
-  }
-  
-  .extension-status .status-text {
-    font-size: 13px;
-  }
-  
-  .extension-status .status-text .time-left {
-    font-size: 13px;
-    display: block;
-  }
-  
-  /* =====================================================
-     Observed Activities
-  ========================================================= */
-  .observed-activities {
-    background-color: var(--color-header-bg);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .observed-activities h3 {
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-  
-  .observed-activities a {
-    display: inline-block;
-    background-color: #3b82f6;
-    color: var(--color-body-text);
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 13px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .observed-activities a:hover {
-    background-color: #2563eb;
-  }
-  
+  /* New Palette Variables */
+  --tufts-blue:  #378ad8ff;
+  --cool-gray:   #378ad8ff;  /* using same as tufts-blue for consistency */
+  --jet:         #37363cff;
+  --jet-2:       #3f3d43ff;
+  --cool-gray-2: #9ea6bdff;
+  --text-color:  #cad2c5;
+  --cancel-red:  #e74c3c;
+  --cancel-red-hover: #c0392b;
+  --save-hover:  #143F66;
+
+  /* Body and Background */
+  --color-body-bg: #000000; /* Black background */
+  --color-body-text: var(--text-color);
+
+  /* Header */
+  --color-header-bg: var(--jet-2);
+  --color-header-text: var(--text-color);
+  --color-header-icon: var(--text-color);
+
+  /* Toggle Switch */
+  --color-toggle-bg: var(--cool-gray);
+  --color-toggle-circle: var(--text-color);
+  --color-toggle-checked-bg: var(--tufts-blue);
+
+  /* Buttons and Interactive States */
+  --color-active-icon: var(--tufts-blue);
+  --color-active-button-bg: var(--tufts-blue);
+  --color-active-button-hover: var(--save-hover);
+
+  --color-button-bg: var(--tufts-blue);
+  --color-button-hover: var(--tufts-blue);
+
+  /* Tooltips */
+  --color-tooltip-bg: var(--cool-gray);
+  --color-tooltip-text: var(--text-color);
+  --color-tooltip-arrow: var(--cool-gray);
+  --font-tooltip-size: 12px;
+}
+
+/* =====================================================
+ Basic Reset & Body
+========================================================= */
+body {
+  width: 400px;
+  font-family: Arial, sans-serif;
+  background-color: var(--color-body-bg);
+  color: var(--color-body-text);
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+}
+
+/* =====================================================
+ Header
+========================================================= */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: var(--color-header-bg);
+}
+
+.header img {
+  width: 30px;
+  height: 30px;
+}
+
+.header .site-name {
+  font-size: 16px;
+  margin-left: 10px;
+  flex-grow: 1;
+  text-align: center;
+  color: var(--color-header-text);
+}
+
+.header .settings-icon {
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--color-header-icon);
+}
+
+/* =====================================================
+ Header Icons with Tooltips
+========================================================= */
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: max-content;
+  background-color: var(--color-tooltip-bg);
+  color: var(--color-tooltip-text);
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+  font-size: var(--font-tooltip-size);
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--color-tooltip-bg) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext,
+.tooltip:focus-within .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* =====================================================
+ Main Content
+========================================================= */
+.content {
+  padding: 20px;
+}
