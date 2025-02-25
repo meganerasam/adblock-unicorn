@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>__MSG_blockedPageTitle__</title>
+    <!-- Import Roboto font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome icons (still available if needed elsewhere) -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Link to the external CSS file -->
+    <link rel="stylesheet" type="text/css" href="blocked.css" />
+  </head>
+  <body>
+    <!-- Container -->
+    <div class="container">
+      <!-- Slightly larger image/icon -->
+      <img alt="Site blocked" src="res/blocked2.png" />
+      <h1>__MSG_blockedPageTitle__</h1>
+      <!-- Dynamic blocked message -->
+      <p></p>
+
+      <!-- Main action: one large button -->
+      <div class="button-group">
+        <a class="button" id="closeAllPopupsBtn" href="#"
+          >__MSG_autoCloseAllMessage__</a
+        >
+      </div>
+
+      <!-- Domain-specific options (shown only if a domain is detected) -->
+      <div class="domain-block-options">
+        <span id="unblockDomainText"></span>
+        <div class="domain-buttons">
+          <a class="small-button" id="unblockDomainBtn" href="#"
+            >__MSG_unblockSiteNowMessage__</a
+          >
+          <a class="small-button" id="whitelistDomainBtn" href="#"
+            >__MSG_unblockSiteAlwaysMessage__</a
+          >
+        </div>
+      </div>
+
+      <!-- Settings link -->
+      <div class="link-group">
+        <a class="link" href="options.html" id="goToSettingsLink"
+          >__MSG_goToSettings__</a
+        >
+      </div>
+    </div>
+    <!-- Include the dynamic blocked page script -->
+    <script src="blocked.js"></script>
+  </body>
+</html>

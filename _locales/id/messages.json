@@ -1,0 +1,21 @@
+{
+  "appDesc": {
+    "message": "Menghentikan iklan pop-up yang mengganggu dan daftar skrip iklan."
+  },
+  "appName": { "message": "Ad Block Unicorn - hentikan iklan invasif" },
+  "blockedPageTitle": { "message": "Halaman iklan ini telah diblokir" },
+  "goToSettings": { "message": "⚙️ Buka pengaturan Ad Block Unicorn ⚙️" },
+  "blockedTextBefore": { "message": "Akses ke" },
+  "blockedTextAfter": { "message": "telah diblokir." },
+  "closeTabMessage": { "message": "Tutup tab" },
+  "autoCloseAllMessage": { "message": "Tutup semua popup secara otomatis" },
+  "blockForeverMessage": { "message": "Tutup otomatis" },
+  "unblockSiteNowMessage": { "message": "Sekarang" },
+  "unblockSiteAlwaysMessage": { "message": "Secara permanen" },
+  "blockForeverError": {
+    "message": "Gagal memblokir situs secara permanen. Silakan coba lagi."
+  },
+  "unblockError": {
+    "message": "Gagal membuka blokir situs. Silakan coba lagi."
+  }
+}

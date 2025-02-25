@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ad Block Unicorn</title>
+
+    <!-- Font Awesome (CDN) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+
+    <!-- Link to your external CSS file -->
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <div class="header">
+      <img
+        src="res/popupIcon-trasnparent.png"
+        alt="Logo"
+        width="30"
+        height="30"
+      />
+      <span class="site-name">...</span>
+      <i id="settingsIcon" class="fas fa-cog settings-icon"></i>
+    </div>
+
+    <!-- New Phishing Warning Container -->
+    <div id="phishingWarningContainer" style="display: none">
+      <i id="phishingIcon" class="fas fa-check-circle"></i>
+      <div>
+        <span id="phishingMessage"
+          >All clear! No issues detected on this site.</span
+        >
+      </div>
+      <!-- New Characteristic Container -->
+      <div id="phishingCharacteristic" style="display: none"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Pause Active Container -->
+      <div id="pauseActive" class="pause-active" style="display: none">
+        <div class="header-active">
+          <h3>Extension Currently Paused</h3>
+        </div>
+        <div class="countdown-container">
+          <span id="pauseCountdown">00:00</span>
+        </div>
+      </div>
+
+      <!-- Quick Settings -->
+      <div class="settings">
+        <h3>Quick settings</h3>
+        <div class="settings-table">
+          <!-- Ad blocking -->
+          <div class="settings-row">
+            <div class="settings-icon"><i class="fas fa-shield-alt"></i></div>
+            <div class="settings-text">Ad Blocking</div>
+            <div class="settings-toggle">
+              <label class="toggle-switch">
+                <input id="toggleAdBlocking" type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Phishing Warning -->
+          <div class="settings-row">
+            <div class="settings-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="settings-text">Phishing Warning</div>
+            <div class="settings-toggle">
+              <label class="toggle-switch">
+                <input id="togglePhishingWarning" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Pause Toggle -->
+          <div class="settings-row">
+            <div class="settings-icon"><i class="fas fa-pause-circle"></i></div>
+            <div class="settings-text">Pause</div>
+            <div class="settings-toggle">
+              <label class="toggle-switch">
+                <input id="togglePause" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pause Setup: Carousel for Pause Duration -->
+      <div id="pauseSetup" class="pause-setup" style="display: none">
+        <div class="carousel-container">
+          <button id="prevPause">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <span id="pauseTime">1 hour</span>
+          <button id="nextPause">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="button-container">
+          <button id="startPause">Start Pause</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Link to your external JS file -->
+    <script src="popup.js"></script>
+  </body>
+</html>

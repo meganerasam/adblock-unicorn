@@ -1,0 +1,21 @@
+{
+  "appDesc": {
+    "message": "หยุดโฆษณาป๊อปอัปที่น่ารำคาญและรายการสคริปต์โฆษณา"
+  },
+  "appName": { "message": "Ad Block Unicorn - หยุดโฆษณาที่รุกล้ำ" },
+  "blockedPageTitle": { "message": "หน้าการโฆษณานี้ถูกบล็อก" },
+  "goToSettings": { "message": "⚙️ ไปที่การตั้งค่า Ad Block Unicorn ⚙️" },
+  "blockedTextBefore": { "message": "การเข้าถึง" },
+  "blockedTextAfter": { "message": "ถูกบล็อกแล้ว" },
+  "closeTabMessage": { "message": "ปิดแท็บ" },
+  "autoCloseAllMessage": { "message": "ปิดป็อปอัพทั้งหมดโดยอัตโนมัติ" },
+  "blockForeverMessage": { "message": "ปิดอัตโนมัติ" },
+  "unblockSiteNowMessage": { "message": "ตอนนี้" },
+  "unblockSiteAlwaysMessage": { "message": "ถาวร" },
+  "blockForeverError": {
+    "message": "ไม่สามารถบล็อกเว็บไซต์นี้ถาวรได้ กรุณาลองใหม่อีกครั้ง"
+  },
+  "unblockError": {
+    "message": "ไม่สามารถยกเลิกการบล็อกเว็บไซต์ได้ กรุณาลองใหม่อีกครั้ง"
+  }
+}

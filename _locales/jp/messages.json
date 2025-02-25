@@ -1,0 +1,21 @@
+{
+  "appDesc": {
+    "message": "迷惑なポップアップ広告と広告スクリプトの一覧を停止します。"
+  },
+  "appName": { "message": "Ad Block Unicorn - 侵入型広告を停止" },
+  "blockedPageTitle": { "message": "この広告ページはブロックされました" },
+  "goToSettings": { "message": "⚙️ Ad Block Unicornの設定に移動 ⚙️" },
+  "blockedTextBefore": { "message": "へのアクセス" },
+  "blockedTextAfter": { "message": "がブロックされました。" },
+  "closeTabMessage": { "message": "タブを閉じる" },
+  "autoCloseAllMessage": { "message": "すべてのポップアップを自動的に閉じる" },
+  "blockForeverMessage": { "message": "自動的に閉じる" },
+  "unblockSiteNowMessage": { "message": "今すぐ" },
+  "unblockSiteAlwaysMessage": { "message": "永久に" },
+  "blockForeverError": {
+    "message": "サイトを永久にブロックできませんでした。再試行してください。"
+  },
+  "unblockError": {
+    "message": "サイトのブロック解除に失敗しました。再試行してください。"
+  }
+}

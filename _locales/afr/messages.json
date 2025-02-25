@@ -1,0 +1,21 @@
+{
+  "appDesc": {
+    "message": "Stopt irriterende pop-up-advertensies en 'n lys van advertensie-skripte."
+  },
+  "appName": { "message": "Ad Block Unicorn - stop indringende advertensies" },
+  "blockedPageTitle": { "message": "Hierdie advertensieblad is geblok." },
+  "goToSettings": { "message": "⚙️ Gaan na Ad Block Unicorn-instellings ⚙️" },
+  "blockedTextBefore": { "message": "Toegang tot" },
+  "blockedTextAfter": { "message": "is geblok." },
+  "closeTabMessage": { "message": "Maak oortjie toe" },
+  "autoCloseAllMessage": { "message": "Sluit ALLE pop-ups outomaties" },
+  "blockForeverMessage": { "message": "Outomaties sluit" },
+  "unblockSiteNowMessage": { "message": "Nou" },
+  "unblockSiteAlwaysMessage": { "message": "Permanent" },
+  "blockForeverError": {
+    "message": "Kon nie die webwerf permanent blokkeer nie. Probeer asseblief weer."
+  },
+  "unblockError": {
+    "message": "Kon nie die webwerf deblokkeer nie. Probeer asseblief weer."
+  }
+}

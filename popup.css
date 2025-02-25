@@ -1,0 +1,786 @@
+/* =====================================================
+   CSS Variables for Colors - New Palette
+   ===================================================== */
+
+/* New Color Palette & Global Variables
+   ----------------------------------------
+   Light:         #cad2c5
+   Medium-light:  #84a98c
+   Medium:        #52796f
+   Dark:          #354f52
+   Darker:        #2f3e46
+========================================================= */
+
+:root {
+  /* Body and Background */
+  --color-body-bg: #2f3e46; /* Darker */
+  --color-body-text: #cad2c5; /* Light */
+
+  /* Header */
+  --color-header-bg: #354f52; /* Dark */
+  --color-header-text: #cad2c5; /* Light */
+  --color-header-icon: #cad2c5; /* Light */
+
+  /* Notification Banner */
+  --color-notification-bg: #84a98c; /* Medium-light */
+  --color-notification-text: #354f52; /* Dark */
+
+  /* Toggle Switch */
+  --color-toggle-bg: #52796f; /* Medium */
+  --color-toggle-circle: #cad2c5; /* Light */
+  --color-toggle-checked-bg: #84a98c; /* Medium-light */
+
+  /* Extension Status Backgrounds */
+  --color-extension-active-bg: #354f52; /* Dark */
+  --color-extension-paused-bg: #cad2c5; /* Light */
+
+  /* Active Status Colors */
+  --color-active-icon: #84a98c; /* Medium-light */
+  --color-active-carousel-button: #84a98c; /* Medium-light */
+  --color-active-carousel-text: #cad2c5; /* Light */
+  --color-active-button-bg: #52796f; /* Medium */
+  --color-active-button-hover: #84a98c; /* Medium-light */
+
+  /* Paused Status Colors */
+  --color-body-text-pause: #354f52; /* Dark */
+  --color-paused-icon: #354f52; /* Dark */
+  --color-paused-button-bg: #52796f; /* Medium */
+  --color-paused-button-hover: #84a98c; /* Medium-light */
+  --color-paused-text: #354f52; /* Dark */
+
+  /* General Button Colors */
+  --color-button-bg: #52796f; /* Medium */
+  --color-button-hover: #84a98c; /* Medium-light */
+
+  /* Observed Activities Background */
+  --color-observed-activities-bg: #354f52; /* Dark */
+
+  /* Tooltip Colors */
+  --color-tooltip-bg: #2f3e46; /* Darker */
+  --color-tooltip-text: #cad2c5; /* Light */
+  --color-tooltip-arrow: #2f3e46; /* Darker */
+
+  /* Tooltip Font Size */
+  --font-tooltip-size: 12px; /* Adjust this value to resize tooltip text */
+}
+
+/* =====================================================
+   Basic Reset & Body
+   ===================================================== */
+
+body {
+  /* Increased to 400px for a wider popup */
+  width: 400px;
+  font-family: Arial, sans-serif;
+  background-color: var(--color-body-bg);
+  color: var(--color-body-text);
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+}
+
+/* =====================================================
+   Header
+   ===================================================== */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: var(--color-header-bg);
+}
+
+.header img {
+  width: 30px;
+  height: 30px;
+}
+
+.header .site-name {
+  font-size: 16px;
+  margin-left: 10px;
+  flex-grow: 1;
+  text-align: center;
+  color: var(--color-header-text);
+}
+
+.header .settings-icon {
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--color-header-icon);
+}
+
+/* =====================================================
+   Header Icons with Tooltips
+   ===================================================== */
+
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: max-content;
+  background-color: var(--color-tooltip-bg);
+  color: var(--color-tooltip-text);
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: var(--font-tooltip-size);
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--color-tooltip-bg) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext,
+.tooltip:focus-within .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* =====================================================
+   Main Content
+   ===================================================== */
+
+.content {
+  padding: 20px;
+}
+
+/* =====================================================
+   Phishing Warning Container - Vertical Layout
+   ===================================================== */
+
+/* Update the Phishing Warning Container to be vertical */
+#phishingWarningContainer {
+  display: flex;
+  flex-direction: column; /* Arrange items vertically */
+  align-items: center;    /* Center items horizontally */
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+/* Adjust the icon within the phishing warning container */
+#phishingWarningContainer i {
+  margin-bottom: 10px;    /* Add space below the icon */
+  font-size: 24px;        /* Increase icon size for better visibility */
+}
+
+/* Center the phishing message text */
+#phishingMessage {
+  text-align: center;
+  font-size: 14px; /* Optional: Adjust font size as needed */
+}
+
+/* =====================================================
+   Phishing Characteristic
+   ===================================================== */
+
+#phishingCharacteristic {
+  margin-top: 20px;
+  font-size: 14px;
+  color: rgb(255, 165, 0);
+  text-align: center;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+/* =====================================================
+   Toggle Switch
+   ===================================================== */
+
+.toggle-switch {
+  --toggle-width: 30px;
+  --toggle-height: 16px;
+  position: relative;
+  display: inline-block;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-toggle-bg);
+  transition: 0.4s;
+  border-radius: calc(var(--toggle-height) / 2);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  width: calc(var(--toggle-height) - 4px);
+  height: calc(var(--toggle-height) - 4px);
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--color-toggle-circle);
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--color-toggle-checked-bg);
+}
+
+input:checked + .slider:before {
+  transform: translateX(calc(var(--toggle-width) - var(--toggle-height)));
+}
+
+input:disabled + .slider {
+  background-color: #555; /* A muted color for the disabled state */
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Optional: Style for the container of a disabled toggle */
+.disabled-toggle {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* =====================================================
+   Extension Status
+   ===================================================== */
+
+.extension-status {
+  background-color: var(--color-extension-active-bg);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.extension-status.active-status {
+  background-color: var(--color-extension-active-bg);
+}
+
+.extension-status.paused-status {
+  background-color: var(--color-extension-paused-bg);
+}
+
+.extension-status .table-status .button button:hover {
+  background-color: var(--color-button-hover);
+}
+
+.extension-status .status-text {
+  font-size: 13px;
+}
+
+.extension-status .status-text .time-left {
+  font-size: 13px;
+  display: block;
+}
+
+/* =====================================================
+   Paused Extension Status
+   ===================================================== */
+
+.paused-status .container {
+  border-radius: 10px;
+  color: var(--color-body-text);
+  margin: 0;
+}
+
+.paused-status .header-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.paused-status .header-status h3 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-body-text-pause);
+}
+
+.paused-status .header-status span {
+  font-size: 11px;
+  color: var(--color-body-text-pause);
+}
+
+.paused-status .table-status {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.paused-status .table-status .icon {
+  text-align: center;
+  width: 10%;
+}
+
+.paused-status .table-status .icon i {
+  font-size: 16px;
+  color: var(--color-paused-icon);
+}
+
+.paused-status .table-status .text {
+  text-align: left;
+  flex-grow: 1;
+  margin-left: 5px;
+  width: 40%;
+  color: var(--color-paused-text);
+}
+
+.paused-status .table-status .button {
+  text-align: center;
+}
+
+.paused-status .table-status .button button {
+  background-color: var(--color-paused-button-bg);
+  color: var(--color-body-text);
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+/* =====================================================
+   Active Extension Status
+   ===================================================== */
+
+.active-status .container {
+  background-color: var(--color-extension-active-bg);
+  border-radius: 10px;
+  color: var(--color-body-text);
+  margin: 0;
+}
+
+.active-status .header-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.active-status .header-status h3 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-body-text);
+}
+
+.active-status .table-status {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.active-status .table-status .icon {
+  text-align: center;
+  width: 10%;
+}
+
+.active-status .table-status .icon i {
+  font-size: 16px;
+  color: var(--color-active-icon);
+}
+
+.active-status .table-status .text {
+  text-align: left;
+  flex-grow: 1;
+  margin-left: 5px;
+  width: 40%;
+  color: var(--color-body-text);
+}
+
+.active-status .table-status .carousel {
+  display: flex;
+  align-items: center;
+  width: 40%;
+}
+
+.active-status .table-status .carousel button {
+  background: none;
+  border: none;
+  color: var(--color-active-carousel-button);
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.active-status .table-status .carousel span {
+  margin: 0 5px;
+  min-width: 60px;
+  text-align: center;
+  color: var(--color-active-carousel-text);
+}
+
+.active-status .table-status .button {
+  text-align: center;
+}
+
+.active-status .table-status .button button {
+  background-color: var(--color-active-button-bg);
+  color: var(--color-body-text);
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.active-status .table-status .icon i,
+.active-status .table-status .carousel button i,
+.active-status .table-status .carousel {
+  color: var(--color-active-carousel-button);
+}
+
+.extension-status.active-status .table-status .icon i {
+  color: var(--color-active-icon);
+}
+
+/* =====================================================
+   Observed Activities
+   ===================================================== */
+
+.observed-activities {
+  background-color: var(--color-observed-activities-bg);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.observed-activities h3 {
+  font-size: 14px;
+  margin-bottom: 10px;
+  margin-top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.observed-activities .actions {
+  display: flex;
+  gap: 10px;
+}
+
+.observed-activities .actions i {
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.observed-activities .status-content {
+  display: flex;
+  align-items: center;
+}
+
+.observed-activities .progress-circle {
+  width: 36%;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.observed-activities .progress-circle svg {
+  width: 80%;
+  height: 80%;
+}
+
+.observed-activities .status-table {
+  width: 64%;
+  border-collapse: collapse;
+}
+
+.observed-activities .status-table tr {
+  border-bottom: 1px solid #3b3b3b;
+}
+
+.observed-activities .status-table tr:last-child {
+  border-bottom: none;
+}
+
+.observed-activities .status-table td {
+  padding: 4px 8px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   Status Table Column Alignment using Classes
+   ===================================================== */
+
+.status-table td.status-label {
+  text-align: left;
+}
+
+.status-table td.status-value {
+  text-align: right;
+}
+
+/* =====================================================
+   No Limit Message
+   ===================================================== */
+
+.no-limit-message {
+  font-size: 14px;
+  color: var(--color-body-text);
+  text-align: center;
+}
+
+/* =====================================================
+   Settings
+   ===================================================== */
+
+.settings {
+  background-color: var(--color-header-bg);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.settings h3 {
+  font-size: 14px;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.settings-table {
+  width: 100%;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.settings-icon {
+  width: 10%;
+  text-align: center;
+}
+
+.settings-icon i {
+  font-size: 16px;
+}
+
+.settings-text {
+  width: 65%;
+  text-align: left;
+}
+
+.settings-toggle {
+  width: 25%;
+  text-align: right;
+}
+
+/* =====================================================
+   Review Section
+   ===================================================== */
+
+.review {
+  background-color: var(--color-header-bg);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.review img {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.review p {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.review a {
+  display: inline-block;
+  background-color: #3b82f6;
+  color: var(--color-body-text);
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 13px;
+  transition: background-color 0.3s ease;
+}
+
+.review a:hover {
+  background-color: #2563eb;
+}
+
+/* =====================================================
+   Keyframes
+   ===================================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* =====================================================
+   Focus Mode Setup (New)
+   ===================================================== */
+
+.focus-mode-setup {
+  margin-top: 15px;
+  border: 1px dashed var(--color-toggle-checked-bg);
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.focus-mode-setup .carousel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.focus-mode-setup .carousel-container button {
+  background: none;
+  border: none;
+  color: var(--color-toggle-checked-bg);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.focus-mode-setup .carousel-container span {
+  margin: 0 10px;
+  font-size: 16px;
+}
+
+.focus-mode-setup .button-container button {
+  background-color: var(--color-toggle-checked-bg);
+  border: none;
+  padding: 8px 12px;
+  color: var(--color-body-text);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* =====================================================
+   Focus Mode Active Container (New)
+   ===================================================== */
+
+.focus-mode-active {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border: 2px solid var(--color-notification-bg);
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.focus-mode-active .header-active h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--color-extension-paused-bg);
+}
+
+.focus-mode-active .countdown-container {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* =====================================================
+   PAUSE Mode Setup and Active Containers
+   ===================================================== */
+
+/* Pause Setup Container mirrors Focus Mode Setup */
+.pause-setup {
+  margin-top: 15px;
+  border: 1px dashed var(--color-toggle-checked-bg);
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.pause-setup .carousel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.pause-setup .carousel-container button {
+  background: none;
+  border: none;
+  color: var(--color-toggle-checked-bg);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.pause-setup .carousel-container span {
+  margin: 0 10px;
+  font-size: 16px;
+}
+
+.pause-setup .button-container button {
+  background-color: var(--color-toggle-checked-bg);
+  border: none;
+  padding: 8px 12px;
+  color: var(--color-body-text);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Pause Active Container mirrors Focus Mode Active */
+.pause-active {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border: 2px solid var(--color-notification-bg);
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.pause-active .header-active h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--color-extension-paused-bg);
+}
+
+.pause-active .countdown-container {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* =====================================================
+   Cleaned Up Unused Styles
+   ===================================================== */

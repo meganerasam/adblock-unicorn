@@ -1,0 +1,21 @@
+{
+  "appDesc": {
+    "message": "Ngưng hiển thị quảng cáo pop-up phiền phức và một danh sách các script quảng cáo."
+  },
+  "appName": { "message": "Ad Block Unicorn - ngăn chặn quảng cáo xâm nhập" },
+  "blockedPageTitle": { "message": "Trang quảng cáo này đã bị chặn" },
+  "goToSettings": { "message": "⚙️ Đi đến cài đặt Ad Block Unicorn ⚙️" },
+  "blockedTextBefore": { "message": "Truy cập vào" },
+  "blockedTextAfter": { "message": "đã bị chặn." },
+  "closeTabMessage": { "message": "Đóng tab" },
+  "autoCloseAllMessage": { "message": "Tự động đóng TẤT CẢ pop-up" },
+  "blockForeverMessage": { "message": "Tự động đóng" },
+  "unblockSiteNowMessage": { "message": "Ngay bây giờ" },
+  "unblockSiteAlwaysMessage": { "message": "Vĩnh viễn" },
+  "blockForeverError": {
+    "message": "Không thể chặn trang web vĩnh viễn. Vui lòng thử lại."
+  },
+  "unblockError": {
+    "message": "Không thể bỏ chặn trang web. Vui lòng thử lại."
+  }
+}

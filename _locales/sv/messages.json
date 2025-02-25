@@ -1,0 +1,23 @@
+{
+  "appDesc": {
+    "message": "Stoppar irriterande popup-annonser och en lista med reklamskript."
+  },
+  "appName": { "message": "Ad Block Unicorn - stoppa påträngande annonser" },
+  "blockedPageTitle": { "message": "Denna reklamsida blockerades" },
+  "goToSettings": {
+    "message": "⚙️ Gå till inställningarna för Ad Block Unicorn ⚙️"
+  },
+  "blockedTextBefore": { "message": "Åtkomst till" },
+  "blockedTextAfter": { "message": "har blockerats." },
+  "closeTabMessage": { "message": "Stäng flik" },
+  "autoCloseAllMessage": { "message": "Stäng alla popup-fönster automatiskt" },
+  "blockForeverMessage": { "message": "Automatisk stängning" },
+  "unblockSiteNowMessage": { "message": "Nu" },
+  "unblockSiteAlwaysMessage": { "message": "Permanent" },
+  "blockForeverError": {
+    "message": "Misslyckades med att permanent blockera sidan. Försök igen."
+  },
+  "unblockError": {
+    "message": "Misslyckades med att avblockera sidan. Försök igen."
+  }
+}

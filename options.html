@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ad Block Unicorn Settings</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Using our custom CSS -->
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <div>
+          <h2>Menu</h2>
+          <!-- Sidebar Links with Specific Paths -->
+          <ul>
+            <li>
+              <a href="#/guide" id="guideLink">
+                <i class="fas fa-book"></i>Guide
+              </a>
+            </li>
+            <li>
+              <a href="#/websites" id="websitesLink">
+                <i class="fas fa-globe"></i>Websites
+              </a>
+            </li>
+            <li>
+              <a href="#/settings" id="settingsLink">
+                <i class="fas fa-cog"></i>Settings
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="content">
+        <!-- Guide Tab (default visible) -->
+        <div id="guideContent" class="tab-content" style="display: block">
+          <h1>Guide</h1>
+          <!-- Pause Active Container -->
+          <div id="pauseActiveGuide" class="pause-active" style="display: none">
+            <div class="header-active">
+              <h3>Extension Currently Paused</h3>
+            </div>
+            <div class="countdown-container">
+              <span id="pauseCountdownGuide">00:00</span>
+            </div>
+          </div>
+          <!-- Welcome Section -->
+          <div class="guide-section">
+            <h2>Welcome to Ad Block Unicorn!</h2>
+            <p>
+              Enhance your browsing experience by blocking unwanted ads and
+              protecting yourself from phishing threats. Our extension ensures a
+              cleaner, safer, and more efficient online journey.
+            </p>
+            <p>
+              Ad Block Unicorn provides you with powerful tools to control your
+              online environment, giving you peace of mind and a more enjoyable
+              browsing experience.
+            </p>
+          </div>
+          <hr />
+          <!-- How It Works Section -->
+          <div class="guide-section">
+            <h2>How It Works</h2>
+            <p>
+              Ad Block Unicorn operates by intercepting network requests to
+              known ad and phishing domains, preventing unwanted content from
+              loading and alerting you to potential threats.
+            </p>
+            <p>
+              Our extension continuously updates its databases to ensure you are
+              protected against the latest advertising techniques and phishing
+              schemes.
+            </p>
+          </div>
+          <hr />
+          <!-- Help Us Improve Section -->
+          <div class="guide-section">
+            <h2>Help Us Improve the Extension</h2>
+            <p>
+              Your feedback is invaluable to us. Help us enhance Ad Block
+              Unicorn by sharing your experiences, suggestions, and any issues
+              you encounter.
+            </p>
+            <p>
+              <a
+                href="https://forms.gle/4H68XaQozjdUGMCu8"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Fill out our feedback form
+              </a>
+              and let us know how we can make Ad Block Unicorn better for you.
+            </p>
+          </div>
+        </div>
+
+        <!-- Websites Tab -->
+        <div id="websitesContent" class="tab-content" style="display: none">
+          <h1>Websites</h1>
+          <!-- Pause Active Container -->
+          <div
+            id="pauseActiveWebsites"
+            class="pause-active"
+            style="display: none"
+          >
+            <div class="header-active">
+              <h3>Extension Currently Paused</h3>
+            </div>
+            <div class="countdown-container">
+              <span id="pauseCountdownWebsites">00:00</span>
+            </div>
+          </div>
+
+          <p>
+            Manage the domains that you trust and prefer not to have blocked by
+            Ad Block Unicorn. Whitelisted sites will bypass ad blocking,
+            ensuring seamless access.
+          </p>
+
+          <!-- Whitelisted Domains Section -->
+          <div class="websites-menu">
+            <div class="title-row">
+              <h2>Whitelisted domains</h2>
+              <button
+                id="showAddWhitelistSiteBtn"
+                class="btn-add-sites"
+                data-tooltip="Whitelist new website"
+              >
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+            <p>
+              Add or remove websites from your whitelist. These sites will not
+              be subject to ad blocking.
+            </p>
+            <table class="blocked-sites-table">
+              <thead>
+                <tr>
+                  <th>Domain</th>
+                  <th class="actions-col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="whitelistedSitesTableBody">
+                <!-- Rendered via JS; if no whitelisted website added, a message row will be shown -->
+              </tbody>
+            </table>
+          </div>
+
+          <hr />
+
+          <!-- Blocked Domains Section -->
+          <div class="websites-menu">
+            <div class="title-row">
+              <h2>Blocked domains</h2>
+              <button
+                id="showAddBlockedSiteBtn"
+                class="btn-add-sites"
+                data-tooltip="Block new website"
+              >
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+            <p>
+              Add or remove websites from your blocked list. These sites will be
+              permanently blocked.
+            </p>
+            <table class="blocked-sites-table">
+              <thead>
+                <tr>
+                  <th>Domain</th>
+                  <th class="actions-col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="blockedSitesTableBody">
+                <!-- Rendered via JS; if no blocked website added, a message row will be shown -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settingsContent" class="tab-content" style="display: none">
+          <h1>Settings</h1>
+
+          <!-- Pause Active Container -->
+          <div
+            id="pauseActiveSettings"
+            class="pause-active"
+            style="display: none"
+          >
+            <div class="header-active">
+              <h3>Extension Currently Paused</h3>
+            </div>
+            <div class="countdown-container">
+              <span id="pauseCountdownSettings">00:00</span>
+            </div>
+          </div>
+
+          <p>
+            Configure your preferences for ad blocking. Toggle features on or
+            off, pause the extension temporarily, or reset all settings to
+            default.
+          </p>
+
+          <div class="option">
+            <div class="description">
+              <h2><i class="fas fa-pause-circle"></i> Pause Extension</h2>
+              <p>
+                Temporarily suspend the extension's functionality for 1 hour.
+              </p>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="pauseToggle" />
+              <label for="pauseToggle"></label>
+              <span id="pauseToggleLabel">OFF</span>
+            </div>
+          </div>
+
+          <div class="option">
+            <div class="description">
+              <h2><i class="fas fa-shield-alt"></i> Ad‑Blocking</h2>
+              <p>
+                Activate or deactivate ad blocking to eliminate unwanted
+                advertisements while browsing.
+              </p>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="adBlockingToggle" checked />
+              <label for="adBlockingToggle"></label>
+              <span id="adBlockingToggleLabel">ON</span>
+            </div>
+          </div>
+
+          <div class="option">
+            <div class="description">
+              <h2><i class="fas fa-robot"></i> Auto close popups</h2>
+              <p>
+                Silently close popup tabs before they appear for a clutter-free
+                browsing experience.
+              </p>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="autoCloseToggle" checked />
+              <label for="autoCloseToggle"></label>
+              <span id="autoCloseToggleLabel">ON</span>
+            </div>
+          </div>
+
+          <div class="option">
+            <div class="description">
+              <h2>
+                <i class="fas fa-exclamation-triangle"></i> Phishing Warning
+              </h2>
+              <p>
+                Enable or disable notifications for potential phishing sites to
+                protect your personal information.
+              </p>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="phishingToggle" checked />
+              <label for="phishingToggle"></label>
+              <span id="phishingToggleLabel">ON</span>
+            </div>
+          </div>
+
+          <div class="option">
+            <div class="description">
+              <h2><i class="fas fa-undo"></i> Reset Extension</h2>
+              <p>
+                Restore Ad Block Unicorn to its default settings by clearing all
+                user data and configurations.
+              </p>
+            </div>
+            <div class="toggle-switch">
+              <button id="resetExtensionBtn" class="btn-reset-extension">
+                <i class="fas fa-undo"></i> Reset All
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dialog for Adding Whitelisted Site -->
+    <div id="whitelistDialog" class="dialog" style="display: none">
+      <div class="dialog-content">
+        <span class="dialog-close" id="whitelistDialogClose">&times;</span>
+        <h2>Whitelist a website</h2>
+        <p style="margin-bottom: 15px">
+          Enter a domain to permanently whitelist. This domain will bypass ad
+          blocking.
+        </p>
+        <h3>Website Domain:</h3>
+        <input
+          type="text"
+          id="whitelistDomainInput"
+          placeholder="e.g. example.com"
+          class="text-input"
+        />
+        <div id="whitelistDomainError" class="error-message"></div>
+        <div class="dialog-buttons">
+          <button id="saveWhitelistBtn" class="btn-save-site">
+            <i class="fas fa-save"></i> Save
+          </button>
+          <button id="cancelWhitelistBtn" class="btn-cancel-site">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dialog for Adding Blocked Domain -->
+    <div id="blockedDialog" class="dialog" style="display: none">
+      <div class="dialog-content">
+        <span class="dialog-close" id="blockedDialogClose">&times;</span>
+        <h2>Block a website</h2>
+        <p style="margin-bottom: 15px">
+          Enter a domain to permanently block. This domain will be blocked
+          indefinitely.
+        </p>
+        <h3>Website Domain:</h3>
+        <input
+          type="text"
+          id="blockedDomainInput"
+          placeholder="e.g. example.com"
+          class="text-input"
+        />
+        <div id="blockedDomainError" class="error-message"></div>
+        <div class="dialog-buttons">
+          <button id="saveBlockedBtn" class="btn-save-site">
+            <i class="fas fa-save"></i> Save
+          </button>
+          <button id="cancelBlockedBtn" class="btn-cancel-site">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Dialog for Reset Confirmation -->
+    <div id="resetConfirmDialog" class="dialog" style="display: none">
+      <div class="dialog-content">
+        <span class="dialog-close" id="resetConfirmDialogClose">&times;</span>
+        <h2>Confirm Reset</h2>
+        <p>
+          Are you sure you want to reset Ad Block Unicorn? This will remove all
+          user data, whitelisted sites, and restore default settings.
+        </p>
+        <div class="dialog-buttons">
+          <button id="confirmResetBtn" class="btn-save-site">
+            <i class="fas fa-undo"></i> Reset All
+          </button>
+          <button id="cancelResetBtn" class="btn-cancel-site">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+</html>

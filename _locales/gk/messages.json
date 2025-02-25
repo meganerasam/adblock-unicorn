@@ -1,0 +1,25 @@
+{
+  "appDesc": {
+    "message": "Σταματά τις ενοχλητικές αναδυόμενες διαφημίσεις και μια λίστα διαφημιστικών σεναρίων."
+  },
+  "appName": {
+    "message": "Ad Block Unicorn - σταματήστε τις εισβλητικές διαφημίσεις"
+  },
+  "blockedPageTitle": { "message": "Αυτή η διαφημιστική σελίδα αποκλείστηκε" },
+  "goToSettings": {
+    "message": "⚙️ Μεταβείτε στις ρυθμίσεις του Ad Block Unicorn ⚙️"
+  },
+  "blockedTextBefore": { "message": "Πρόσβαση στο" },
+  "blockedTextAfter": { "message": "έχει αποκλειστεί." },
+  "closeTabMessage": { "message": "Κλείστε την καρτέλα" },
+  "autoCloseAllMessage": { "message": "Αυτόματο κλείσιμο όλων των popups" },
+  "blockForeverMessage": { "message": "Αυτόματο κλείσιμο" },
+  "unblockSiteNowMessage": { "message": "Τώρα" },
+  "unblockSiteAlwaysMessage": { "message": "Μόνιμα" },
+  "blockForeverError": {
+    "message": "Αποτυχία μόνιμου αποκλεισμού της ιστοσελίδας. Δοκιμάστε ξανά."
+  },
+  "unblockError": {
+    "message": "Αποτυχία απεμπλοκής της ιστοσελίδας. Δοκιμάστε ξανά."
+  }
+}

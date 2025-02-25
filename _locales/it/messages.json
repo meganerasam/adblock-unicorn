@@ -1,0 +1,25 @@
+{
+  "appDesc": {
+    "message": "Interrompe fastidiosi popup pubblicitari e una lista di script pubblicitari."
+  },
+  "appName": { "message": "Ad Block Unicorn - ferma gli annunci invasivi" },
+  "blockedPageTitle": {
+    "message": "Questa pagina pubblicitaria è stata bloccata"
+  },
+  "goToSettings": {
+    "message": "⚙️ Vai alle impostazioni di Ad Block Unicorn ⚙️"
+  },
+  "blockedTextBefore": { "message": "Accesso a" },
+  "blockedTextAfter": { "message": "è stato bloccato." },
+  "closeTabMessage": { "message": "Chiudi scheda" },
+  "autoCloseAllMessage": { "message": "Chiudi automaticamente tutti i popup" },
+  "blockForeverMessage": { "message": "Chiusura automatica" },
+  "unblockSiteNowMessage": { "message": "Adesso" },
+  "unblockSiteAlwaysMessage": { "message": "Permanentemente" },
+  "blockForeverError": {
+    "message": "Impossibile bloccare il sito per sempre. Per favore riprova."
+  },
+  "unblockError": {
+    "message": "Impossibile sbloccare il sito. Per favore riprova."
+  }
+}

@@ -1,0 +1,627 @@
+/* ========================================
+   New Color Palette & Global Variables
+   ----------------------------------------
+   Light:         #cad2c5
+   Medium-light:  #84a98c
+   Medium:        #52796f
+   Dark:          #354f52
+   Darker:        #2f3e46
+======================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  /* Body & Containers */
+  --color-body-bg: #2f3e46; /* Darker background */
+  --color-body-text: #cad2c5; /* Light text for high contrast */
+  --color-extension-active-bg: #2f3e46;
+  --color-extension-paused-bg: #354f52; /* Use Dark for paused state */
+
+  /* Headers & Sidebars */
+  --color-header-bg: #354f52; /* Dark header */
+  --color-header-text: #cad2c5;
+  --color-header-icon: #cad2c5;
+  --color-sidebar-bg: #354f52; /* Sidebar background */
+  --color-sidebar-text: #cad2c5; /* Sidebar text */
+
+  /* Notifications */
+  --color-notification-bg: #84a98c; /* Medium-light green */
+  --color-notification-text: #2f3e46; /* Contrast text */
+
+  /* Toggles */
+  --color-toggle-bg: #52796f; /* Medium toggle background */
+  --color-toggle-circle: #cad2c5;
+  --color-toggle-checked-bg: #84a98c;
+
+  /* Icons, Buttons & Interactive States */
+  --color-active-icon: #84a98c; /* Active elements */
+  --color-active-carousel-button: #84a98c;
+  --color-active-carousel-text: #cad2c5;
+  --color-active-button-bg: #84a98c; /* Use for Save buttons, etc. */
+  --color-active-button-hover: #52796f;
+
+  --color-body-text-pause: #84a98c;
+  --color-paused-icon: #84a98c;
+  --color-paused-button-bg: #84a98c;
+  --color-paused-button-hover: #52796f;
+  --color-paused-text: #84a98c;
+
+  --color-button-bg: #52796f; /* For toolbar buttons */
+  --color-button-hover: #84a98c;
+
+  /* Sections */
+  --color-guide-section-bg: #354f52; /* Background for guide sections */
+
+  /* Tooltips */
+  --color-tooltip-bg: #52796f;
+  --color-tooltip-text: #cad2c5;
+  --color-tooltip-arrow: #52796f;
+  --font-tooltip-size: 12px;
+
+  /* Dialog (Modal) */
+  --color-dialogbox-bg: #cad2c5; /* Light background for modals */
+  --color-dialogbox-text: #2f3e46; /* Dark text */
+  --color-button-cancel-bg: #52796f; /*For cancel buttons & close icons */
+  --color-button-cancel-hover-bg: #f06a6a; /* For cancel buttons & close icons */
+}
+
+/* ========================================
+   Global Styles
+======================================== */
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: var(--color-body-bg);
+  color: var(--color-body-text);
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--color-extension-active-bg);
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+/* ========================================
+   Sidebar
+======================================== */
+.sidebar {
+  width: 250px;
+  background-color: var(--color-sidebar-bg);
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: var(--color-sidebar-text);
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: var(--color-sidebar-text);
+  font-size: 16px;
+}
+
+.sidebar ul li a:hover {
+  color: var(--color-active-icon);
+}
+
+.sidebar a.active {
+  /* background-color: var(--color-active-icon); Matches the active icon color */
+  color: var(--color-body-text); /* Ensures text remains readable */
+  font-weight: 700; /* Makes the active link bold */
+  border-radius: 5px; /* Adds slight rounding for aesthetics */
+  font-size: 18px;
+  /* transition: background-color 0.3s ease, color 0.3s ease; */
+}
+
+.sidebar ul li a i {
+  margin-right: 8px;
+}
+
+/* ========================================
+   Content
+======================================== */
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.content h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.content p {
+  font-size: 14px;
+  color: var(--color-body-text);
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+/* ========================================
+   Blocks & Tables
+======================================== */
+.websites-menu {
+  margin-bottom: 30px;
+}
+
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.title-row h2 {
+  margin: 0;
+}
+
+/* ========================================
+   Buttons (Toolbar)
+======================================== */
+.btn-add-sites {
+  background-color: var(--color-button-bg);
+  color: var(--color-body-text);
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  margin-left: 10px;
+}
+
+.btn-add-sites:hover {
+  background-color: var(--color-button-hover);
+}
+
+/* Tooltips for top buttons */
+.btn-add-sites::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--color-tooltip-bg);
+  color: var(--color-tooltip-text);
+  padding: 5px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  font-size: var(--font-tooltip-size);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.btn-add-sites:hover::after {
+  opacity: 1;
+}
+
+/* Tooltip rules for action buttons inside tables */
+.btn-remove {
+  position: relative;
+  overflow: visible;
+}
+
+.btn-remove::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -30px;
+  left: -300%;
+  transform: translateX(-50%);
+  background-color: var(--color-tooltip-bg);
+  color: var(--color-tooltip-text);
+  padding: 5px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  font-size: var(--font-tooltip-size);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.btn-remove:hover::after {
+  opacity: 1;
+}
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: var(--color-paused-icon);
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 8px;
+}
+
+.btn-remove:hover {
+  color: var(--color-paused-button-hover);
+}
+
+/* ========================================
+   Inputs
+======================================== */
+.text-input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--color-toggle-bg);
+  border-radius: 5px;
+  background-color: var(--color-dialogbox-bg);
+  color: var(--color-dialogbox-text);
+}
+
+/* Error messages */
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+/* Disabled inputs */
+.text-input:disabled {
+  background-color: #777;
+  color: #bbb;
+}
+
+/* ========================================
+   Updated Dialog (Modal) Styling
+   for Add/Update Form
+======================================== */
+.dialog {
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog-content {
+  background-color: var(--color-dialogbox-bg); /* #cad2c5 */
+  color: var(--color-dialogbox-text); /* #2f3e46 */
+  border-radius: 10px;
+  padding: 20px 30px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
+  animation: fadeIn 0.3s ease;
+  border: 2px solid var(--color-toggle-bg); /* #52796f */
+}
+
+.dialog-close {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--color-button-cancel-bg); /* #52796f */
+  transition: color 0.3s ease;
+}
+
+.dialog-close:hover {
+  color: var(--color-button-cancel-hover-bg); /* #f06a6a */
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* -------------------------------
+   Save & Cancel Buttons in Dialog
+---------------------------------- */
+.btn-save-site {
+  background-color: var(--color-active-button-bg); /* #84a98c */
+  color: var(--color-body-text); /* #cad2c5 */
+  padding: 8px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-save-site:hover {
+  background-color: var(--color-active-button-hover); /* #52796f */
+  transform: translateY(-1px);
+}
+
+.btn-save-site i {
+  margin-right: 5px;
+}
+
+.btn-cancel-site {
+  background-color: var(--color-body-bg); /* #52796f */
+  color: var(--color-body-text); /* #cad2c5 */
+  padding: 8px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-cancel-site:hover {
+  background-color: var(--color-button-cancel-hover-bg); /* #f06a6a */
+  transform: translateY(-1px);
+}
+
+.btn-cancel-site i {
+  margin-right: 5px;
+}
+
+/* ========================================
+   Tables & Progress Bar
+======================================== */
+.blocked-sites-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-body-bg);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.blocked-sites-table th,
+.blocked-sites-table td {
+  padding: 15px;
+  text-align: left;
+  position: relative;
+  overflow: visible;
+}
+
+.blocked-sites-table td {
+  white-space: nowrap;
+}
+
+.blocked-sites-table th {
+  background-color: var(--color-header-bg);
+}
+
+.blocked-sites-table tr:nth-child(even) {
+  background-color: #2a2a2a;
+}
+
+.blocked-sites-table tr:nth-child(odd) {
+  background-color: #333333;
+}
+
+.blocked-sites-table th.actions-col {
+  width: 60px;
+}
+
+/* ========================================
+   Settings Page Specific Styles
+======================================== */
+.tab-content#settingsContent {
+  background-color: var(--color-body-bg);
+  color: var(--color-body-text);
+}
+
+#settingsContent h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+#settingsContent p {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-header-bg);
+}
+
+.option:last-child {
+  border-bottom: none;
+}
+
+.option .description {
+  flex-grow: 1;
+}
+
+.option .description h2 {
+  font-size: 16px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.option .description h2 i {
+  margin-right: 10px;
+}
+
+.option .description p {
+  font-size: 12px;
+  margin: 5px 0 0 0;
+}
+
+.option .toggle-switch {
+  display: flex;
+  align-items: center;
+}
+
+/* Fix toggle label shifting by setting a fixed width */
+.option .toggle-switch span {
+  width: 40px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.option .toggle-switch input {
+  display: none;
+}
+
+.option .toggle-switch label {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  background-color: var(--color-toggle-bg);
+  border-radius: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.option .toggle-switch label:before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-toggle-circle);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.option .toggle-switch input:checked + label {
+  background-color: var(--color-toggle-checked-bg);
+}
+
+.option .toggle-switch input:checked + label:before {
+  transform: translateX(20px);
+}
+
+/* New Reset Button Styling */
+.btn-reset-extension {
+  background-color: var(--color-active-button-bg);
+  color: var(--color-body-text);
+  padding: 8px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-reset-extension:hover {
+  background-color: var(--color-active-button-hover);
+  transform: translateY(-1px);
+}
+
+.btn-reset-extension i {
+  margin-right: 5px;
+}
+
+/* ========================================
+   Keyframes
+======================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   Pause Active Container
+======================================== */
+.pause-active {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border: 2px solid var(--color-notification-bg); /* highlight border */
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.pause-active .header-active h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--color-body-text);
+}
+
+.pause-active .countdown-container {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* ========================================
+   Guide Page Specific Styles
+======================================== */
+.guide-section {
+  margin-bottom: 20px;
+}
+
+.guide-section h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: var(--color-active-icon);
+}
+
+.guide-section p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.guide-section a {
+  color: var(--color-active-icon);
+  text-decoration: none;
+}
+
+.guide-section a:hover {
+  text-decoration: underline;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #52796f;
+  margin: 20px 0;
+}

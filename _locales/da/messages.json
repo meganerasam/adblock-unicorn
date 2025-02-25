@@ -1,0 +1,21 @@
+{
+  "appDesc": {
+    "message": "Stopper irriterende pop-up annoncer og en liste over reklamescripts."
+  },
+  "appName": { "message": "Ad Block Unicorn - stop påtrængende annoncer" },
+  "blockedPageTitle": { "message": "Denne reklameside blev blokeret" },
+  "goToSettings": { "message": "⚙️ Gå til Ad Block Unicorn-indstillinger ⚙️" },
+  "blockedTextBefore": { "message": "Adgang til" },
+  "blockedTextAfter": { "message": "er blevet blokeret." },
+  "closeTabMessage": { "message": "Luk fane" },
+  "autoCloseAllMessage": { "message": "Luk automatisk alle popups" },
+  "blockForeverMessage": { "message": "Luk automatisk" },
+  "unblockSiteNowMessage": { "message": "Nu" },
+  "unblockSiteAlwaysMessage": { "message": "Permanent" },
+  "blockForeverError": {
+    "message": "Kunne ikke blokere siden permanent. Prøv igen."
+  },
+  "unblockError": {
+    "message": "Kunne ikke fjerne blokeringen af siden. Prøv igen."
+  }
+}

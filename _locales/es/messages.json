@@ -1,0 +1,25 @@
+{
+  "appDesc": {
+    "message": "Detiene anuncios emergentes molestos y una lista de scripts publicitarios."
+  },
+  "appName": { "message": "Ad Block Unicorn - detén los anuncios invasivos" },
+  "blockedPageTitle": { "message": "Esta página publicitaria fue bloqueada" },
+  "goToSettings": {
+    "message": "⚙️ Ir a la configuración de Ad Block Unicorn ⚙️"
+  },
+  "blockedTextBefore": { "message": "El acceso a" },
+  "blockedTextAfter": { "message": "ha sido bloqueado." },
+  "closeTabMessage": { "message": "Cerrar pestaña" },
+  "autoCloseAllMessage": {
+    "message": "Cerrar automáticamente todas las ventanas emergentes"
+  },
+  "blockForeverMessage": { "message": "Cierre automático" },
+  "unblockSiteNowMessage": { "message": "Ahora" },
+  "unblockSiteAlwaysMessage": { "message": "Permanentemente" },
+  "blockForeverError": {
+    "message": "No se pudo bloquear el sitio de forma permanente. Por favor, inténtalo de nuevo."
+  },
+  "unblockError": {
+    "message": "No se pudo desbloquear el sitio. Por favor, inténtalo de nuevo."
+  }
+}

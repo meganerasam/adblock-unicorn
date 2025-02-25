@@ -1,0 +1,21 @@
+{
+  "appDesc": {
+    "message": "يوقف الإعلانات المنبثقة المزعجة وقائمة سكريبتات الإعلانات."
+  },
+  "appName": { "message": "Ad Block Unicorn - أوقف الإعلانات المزعجة" },
+  "blockedPageTitle": { "message": "تم حظر صفحة الإعلانات هذه" },
+  "goToSettings": { "message": "⚙️ انتقل إلى إعدادات Ad Block Unicorn ⚙️" },
+  "blockedTextBefore": { "message": "الوصول إلى" },
+  "blockedTextAfter": { "message": "تم حظره." },
+  "closeTabMessage": { "message": "أغلق التبويب" },
+  "autoCloseAllMessage": { "message": "إغلاق جميع النوافذ المنبثقة تلقائيًا" },
+  "blockForeverMessage": { "message": "إغلاق تلقائي" },
+  "unblockSiteNowMessage": { "message": "الآن" },
+  "unblockSiteAlwaysMessage": { "message": "دائمًا" },
+  "blockForeverError": {
+    "message": "فشل في حظر الموقع بشكل دائم. الرجاء المحاولة مرة أخرى."
+  },
+  "unblockError": {
+    "message": "فشل في إلغاء حظر الموقع. الرجاء المحاولة مرة أخرى."
+  }
+}
