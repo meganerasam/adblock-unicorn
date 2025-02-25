@@ -2,7 +2,7 @@
  * background.js (Service Worker)
  ************************************************************/
 
-const API_URL_RULES = "http://adblock-unicorn.com/adbunicorn.php"; // Replace with your actual PHP script URL
+const API_URL_RULES = "https://adblock-unicorn.com/ext/adbunicorn.php"; // Replace with your actual PHP script URL
 const API_URL = "adblock-unicorn.com"; // Replace with your actual PHP script URL
 const HEADERS = { "Content-Type": "application/json" };
 
@@ -78,7 +78,7 @@ async function configureUninstallUrl() {
   queryParams += `&extid=${chrome.runtime.id}&extv=${
     chrome.runtime.getManifest().version
   }`;
-  const url = `http://${API_URL}/uninstall-unicorn.php${queryParams}`;
+  const url = `https://${API_URL}/ext/uninstall-unicorn.php${queryParams}`;
   chrome.runtime.setUninstallURL(url);
 }
 
@@ -718,7 +718,7 @@ async function handleResetExtension(message, sendResponse) {
       foreverBlockedSitesRemoved: [],
       phishingWarningEnabled: true,
       adBlockingEnabled: true,
-      autoCloseAllEnabled: false,
+      autoCloseAllEnabled: true,
     });
     await fetchAndStoreDefaultPhishingSites();
     await fetchAndStoreDefaultAdSites();
@@ -863,7 +863,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       foreverBlockedSitesRemoved: [],
       phishingWarningEnabled: true,
       adBlockingEnabled: true,
-      autoCloseAllEnabled: false,
+      autoCloseAllEnabled: true,
     });
     await fetchAndStoreDefaultPhishingSites();
     await fetchAndStoreDefaultAdSites();

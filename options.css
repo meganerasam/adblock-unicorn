@@ -1,66 +1,73 @@
 /* ========================================
    New Color Palette & Global Variables
    ----------------------------------------
-   Light:         #cad2c5
-   Medium-light:  #84a98c
-   Medium:        #52796f
-   Dark:          #354f52
-   Darker:        #2f3e46
+   New Palette Variables:
+     --tufts-blue:      #378ad8ff;
+     --cool-gray:       #9287b2ff;
+     --jet:             #37363cff;
+     --jet-2:           #3f3d43ff;
+     --cool-gray-2:     #9ea6bdff;
+     --text-color:      #cad2c5;
+     --cancel-red:      #e74c3c;      
+     --cancel-red-hover: #c0392b;  
+     --save-hover:      #143F66;
 ======================================== */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 :root {
-  /* Body & Containers */
-  --color-body-bg: #2f3e46; /* Darker background */
-  --color-body-text: #cad2c5; /* Light text for high contrast */
-  --color-extension-active-bg: #2f3e46;
-  /* Removed paused-specific background */
+  /* New Palette Variables */
+  --tufts-blue: #378ad8ff;
+  /* For a more unified palette, I’m using tufts-blue as cool-gray as well */
+  --cool-gray: #378ad8ff;
+  --jet: #37363cff;
+  --jet-2: #3f3d43ff;
+  --cool-gray-2: #9ea6bdff;
+  --text-color: #cad2c5;
+  --cancel-red: #e74c3c;
+  --cancel-red-hover: #c0392b;
+  --save-hover: #143F66;
 
-  /* Headers & Sidebars */
-  --color-header-bg: #354f52; /* Dark header */
-  --color-header-text: #cad2c5;
-  --color-header-icon: #cad2c5;
-  --color-sidebar-bg: #354f52; /* Sidebar background */
-  --color-sidebar-text: #cad2c5; /* Sidebar text */
+  /* Body & Containers */
+  --color-body-bg: #000000; /* Darkest background */
+  --color-body-text: var(--text-color);
+  --color-extension-active-bg: var(--jet);
+
+  /* Headers & Top Tabs */
+  --color-header-bg: var(--jet-2);
+  --color-header-text: var(--text-color);
+  --color-header-icon: var(--text-color);
 
   /* Notifications */
-  --color-notification-bg: #84a98c; /* Medium-light green */
-  --color-notification-text: #2f3e46; /* Contrast text */
+  --color-notification-bg: var(--tufts-blue);
+  --color-notification-text: var(--jet);
 
   /* Toggles */
-  --color-toggle-bg: #52796f; /* Medium toggle background */
-  --color-toggle-circle: #cad2c5;
-  --color-toggle-checked-bg: #84a98c;
+  --color-toggle-bg: var(--cool-gray);
+  --color-toggle-circle: var(--text-color);
+  --color-toggle-checked-bg: var(--tufts-blue);
 
   /* Icons, Buttons & Interactive States */
-  --color-active-icon: #84a98c; /* Active elements */
-  --color-active-carousel-button: #84a98c;
-  --color-active-carousel-text: #cad2c5;
-  --color-active-button-bg: #84a98c; /* For Save buttons, etc. */
-  --color-active-button-hover: #52796f;
+  --color-active-icon: var(--tufts-blue);
+  --color-active-carousel-button: var(--tufts-blue);
+  --color-active-carousel-text: var(--text-color);
+  --color-active-button-bg: var(--tufts-blue);
+  --color-active-button-hover: var(--save-hover);
 
-  /* General Button Colors */
-  --color-button-bg: #52796f;
-  --color-button-hover: #84a98c;
+  --color-button-bg: var(--tufts-blue);
+  --color-button-hover: var(--tufts-blue);
 
   /* Sections */
-  --color-guide-section-bg: #354f52; /* Background for guide sections */
+  --color-guide-section-bg: var(--jet-2);
 
   /* Tooltips */
-  --color-tooltip-bg: #52796f;
-  --color-tooltip-text: #cad2c5;
-  --color-tooltip-arrow: #52796f;
+  --color-tooltip-bg: var(--cool-gray);
+  --color-tooltip-text: var(--text-color);
+  --color-tooltip-arrow: var(--cool-gray);
   --font-tooltip-size: 12px;
 
-  /* Dialog (Modal) */
-  --color-dialogbox-bg: #cad2c5;
-  --color-dialogbox-text: #2f3e46;
-  --color-button-cancel-bg: #52796f;
-  --color-button-cancel-hover-bg: #f06a6a;
+  /* Dialog (Modal) - (not used now but kept for Reset) */
+  --color-dialogbox-bg: var(--cool-gray-2);
+  --color-dialogbox-text: var(--jet);
+  --color-button-cancel-bg: var(--cool-gray);
+  --color-button-cancel-hover-bg: var(--tufts-blue);
 }
 
 /* ========================================
@@ -75,9 +82,8 @@ body {
   font-size: 13px;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
-  overflow: hidden;
+  align-items: flex-start;
+  min-height: 100vh;
 }
 
 html,
@@ -88,108 +94,147 @@ body {
 }
 
 .container {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  background-color: var(--color-extension-active-bg);
-  border-radius: 0;
-  box-shadow: none;
-  overflow: hidden;
-}
-
-/* ========================================
-   Sidebar
-======================================== */
-.sidebar {
-  width: 250px;
-  background-color: var(--color-sidebar-bg);
-  padding: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.sidebar h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: var(--color-sidebar-text);
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar ul li {
-  margin-bottom: 15px;
-}
-
-.sidebar ul li a {
-  text-decoration: none;
-  color: var(--color-sidebar-text);
-  font-size: 16px;
-}
-
-.sidebar ul li a:hover {
-  color: var(--color-active-icon);
-}
-
-.sidebar a.active {
-  color: var(--color-body-text);
-  font-weight: 700;
-  border-radius: 5px;
-  font-size: 18px;
-}
-
-.sidebar ul li a i {
-  margin-right: 8px;
-}
-
-/* ========================================
-   Content
-======================================== */
-.content {
-  flex-grow: 1;
-  padding: 20px;
-  max-width: 800px;
   width: 100%;
-  margin: 0 auto;
-}
-
-.content h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-.content p {
-  font-size: 14px;
-  color: var(--color-body-text);
-  margin-bottom: 20px;
-  text-align: left;
+  max-width: 1000px;
+  margin: 20px;
 }
 
 /* ========================================
-   Blocks & Tables
+   Top Tabs Navigation
 ======================================== */
-.websites-menu {
-  margin-bottom: 30px;
+.top-tabs {
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 0;
 }
 
-.title-row {
+.top-tabs ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+  border-bottom: 1px solid var(--tufts-blue);
 }
 
-.title-row h2 {
+.top-tabs ul li {
   margin: 0;
 }
 
+.top-tabs ul li a {
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: var(--color-body-text);
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.top-tabs ul li a.active {
+  background-color: var(--color-extension-active-bg);
+  border-bottom: 3px solid var(--color-active-icon);
+}
+
 /* ========================================
-   Buttons (Toolbar)
+   Content Area
+======================================== */
+.content {
+  background-color: var(--color-body-bg);
+  color: var(--color-body-text);
+  padding: 20px;
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+}
+
+/* ========================================
+   Websites Columns (Side-by-Side Layout)
+======================================== */
+.websites-columns {
+  display: flex;
+  gap: 50px;
+}
+
+.websites-menu {
+  flex: 1;
+}
+
+/* ========================================
+   Title Row Update: h2 with space-between
+   (for domain lists, already defined)
+======================================== */
+.title-row h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+}
+
+/* ========================================
+   Domain List Style (using UL instead of table)
+======================================== */
+.domain-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.domain-list li {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--tufts-blue);
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+.domain-list li:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Placeholder style when list is empty */
+.domain-list li.empty {
+  font-style: italic;
+  text-align: center;
+  border: none;
+  color: var(--text-color);
+}
+
+/* ========================================
+   Inline Add Form Style
+======================================== */
+.add-form {
+  margin-bottom: 12px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.add-form input[type="text"] {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid var(--color-toggle-bg);
+  border-radius: 4px;
+  color: var(--color-dialogbox-text);
+}
+
+.add-form button {
+  background-color: var(--color-active-button-bg);
+  color: var(--color-body-text);
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.add-form button:hover {
+  background-color: var(--color-active-button-hover);
+}
+
+/* ========================================
+   Buttons (Toolbar) and General Reset Section
 ======================================== */
 .btn-add-sites {
   background-color: var(--color-button-bg);
@@ -198,12 +243,12 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  position: relative;
   margin-left: 10px;
+  position: relative;
 }
 
 .btn-add-sites:hover {
-  background-color: var(--color-button-hover);
+  background-color: var(--save-hover);
 }
 
 .btn-add-sites::after {
@@ -228,23 +273,19 @@ body {
   opacity: 1;
 }
 
-/* Tooltip for remove buttons */
 .btn-remove {
   background: none;
   border: none;
   color: var(--color-button-bg);
   cursor: pointer;
   font-size: 16px;
-  margin-left: 8px;
 }
 
 .btn-remove:hover {
-  color: var(--color-button-hover);
+  color: var(--save-hover);
 }
 
-/* ========================================
-   Inputs
-======================================== */
+/* Input and Error */
 .text-input {
   display: block;
   width: 100%;
@@ -261,232 +302,7 @@ body {
   margin-top: 5px;
 }
 
-.text-input:disabled {
-  background-color: #777;
-  color: #bbb;
-}
-
-/* ========================================
-   Dialog (Modal) Styling
-======================================== */
-.dialog {
-  position: fixed;
-  z-index: 10000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.dialog-content {
-  background-color: var(--color-dialogbox-bg);
-  color: var(--color-dialogbox-text);
-  border-radius: 10px;
-  padding: 20px 30px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-  position: relative;
-  animation: fadeIn 0.3s ease;
-  border: 2px solid var(--color-toggle-bg);
-}
-
-.dialog-close {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  font-size: 22px;
-  cursor: pointer;
-  color: var(--color-button-cancel-bg);
-  transition: color 0.3s ease;
-}
-
-.dialog-close:hover {
-  color: var(--color-button-cancel-hover-bg);
-}
-
-.dialog-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-.btn-save-site {
-  background-color: var(--color-active-button-bg);
-  color: var(--color-body-text);
-  padding: 8px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
-  display: inline-flex;
-  align-items: center;
-}
-
-.btn-save-site:hover {
-  background-color: var(--color-active-button-hover);
-  transform: translateY(-1px);
-}
-
-.btn-save-site i {
-  margin-right: 5px;
-}
-
-.btn-cancel-site {
-  background-color: var(--color-body-bg);
-  color: var(--color-body-text);
-  padding: 8px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
-  display: inline-flex;
-  align-items: center;
-}
-
-.btn-cancel-site:hover {
-  background-color: var(--color-button-cancel-hover-bg);
-  transform: translateY(-1px);
-}
-
-.btn-cancel-site i {
-  margin-right: 5px;
-}
-
-/* ========================================
-   Tables & Progress Bar
-======================================== */
-.blocked-sites-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: var(--color-body-bg);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.blocked-sites-table th,
-.blocked-sites-table td {
-  padding: 15px;
-  text-align: left;
-}
-
-.blocked-sites-table th {
-  background-color: var(--color-header-bg);
-}
-
-.blocked-sites-table tr:nth-child(even) {
-  background-color: #2a2a2a;
-}
-
-.blocked-sites-table tr:nth-child(odd) {
-  background-color: #333333;
-}
-
-.blocked-sites-table th.actions-col {
-  width: 60px;
-}
-
-/* ========================================
-   Settings Page Specific Styles
-======================================== */
-.tab-content#settingsContent {
-  background-color: var(--color-body-bg);
-  color: var(--color-body-text);
-}
-
-#settingsContent h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-#settingsContent p {
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-.option {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--color-header-bg);
-}
-
-.option:last-child {
-  border-bottom: none;
-}
-
-.option .description {
-  flex-grow: 1;
-}
-
-.option .description h2 {
-  font-size: 16px;
-  margin: 0;
-  display: flex;
-  align-items: center;
-}
-
-.option .description h2 i {
-  margin-right: 10px;
-}
-
-.option .description p {
-  font-size: 12px;
-  margin: 5px 0 0 0;
-}
-
-.option .toggle-switch {
-  display: flex;
-  align-items: center;
-}
-
-/* Fixed width for toggle labels */
-.option .toggle-switch span {
-  width: 40px;
-  text-align: center;
-  font-size: 12px;
-  margin-left: 8px;
-}
-
-.option .toggle-switch input {
-  display: none;
-}
-
-.option .toggle-switch label {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 20px;
-  background-color: var(--color-toggle-bg);
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.option .toggle-switch label:before {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  background-color: var(--color-toggle-circle);
-  border-radius: 50%;
-  transition: 0.3s;
-}
-
-.option .toggle-switch input:checked + label {
-  background-color: var(--color-toggle-checked-bg);
-}
-
-.option .toggle-switch input:checked + label:before {
-  transform: translateX(20px);
-}
-
-/* New Reset Button Styling */
+/* Reset Extension Button */
 .btn-reset-extension {
   background-color: var(--color-active-button-bg);
   color: var(--color-body-text);
@@ -497,6 +313,7 @@ body {
   transition: background 0.3s, transform 0.2s;
   display: inline-flex;
   align-items: center;
+  margin-top: 10px;
 }
 
 .btn-reset-extension:hover {
@@ -509,17 +326,38 @@ body {
 }
 
 /* ========================================
-   Keyframes
+   New: Settings Options Layout
+   Using a table-like (two-column) flex layout for features.
 ======================================== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
 }
 
-/* =====================================================
-   Cleaned Up Unused Styles (Pause/Focus related removed)
-========================================================= */
+.option-control {
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.option-text {
+  flex: 1;
+}
+
+.option-text h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.option-text p {
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
