@@ -298,6 +298,16 @@ async function updateStorageForKey(key, newValue) {
 async function fetchAndStoreUpToDateData() {
   try {
     const syncData = await chrome.storage.sync.get(null);
+    const { whitelistedSites, foreverBlockedSites } =
+      await chrome.storage.local.get([
+        "whitelistedSites",
+        "foreverBlockedSites",
+      ]);
+
+    // Add the whitelisted and blocked to syncData before sending to the backend
+    syncData.whitelistedSites = whitelistedSites;
+    syncData.foreverBlockedSites = foreverBlockedSites;
+
     const response = await fetch(API_URL_RULES, {
       method: "POST",
       headers: HEADERS,
@@ -733,21 +743,6 @@ async function handleResetExtension(message, sendResponse) {
   }
 }
 
-async function handleSetPhishingBadge(message, sendResponse) {
-  try {
-    const { flagged, tabId } = message.payload;
-    if (flagged) {
-      chrome.action.setBadgeText({ tabId, text: "⚠" });
-    } else {
-      chrome.action.setBadgeText({ tabId, text: "" });
-    }
-    sendResponse({ success: true });
-  } catch (err) {
-    console.error("Error in handleSetPhishingBadge:", err);
-    sendResponse({ success: false, error: err.message });
-  }
-}
-
 async function handleGetCurrentTabId(message, sendResponse) {
   try {
     const { option, domain, name } = message.payload;
@@ -817,9 +812,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return true;
     case "RESET_EXTENSION":
       handleResetExtension(message, sendResponse);
-      return true;
-    case "SET_PHISHING_BADGE":
-      handleSetPhishingBadge(message, sendResponse);
       return true;
     case "GET_CURRENT_TAB_ID":
       handleGetCurrentTabId(message, sendResponse);
