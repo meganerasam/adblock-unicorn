@@ -55,21 +55,6 @@ async function reloadSpecificPage(pageName, hash = "") {
 }
 
 /************************************************************
- * reloadAllTab
- ************************************************************/
-function reloadAllTab() {
-  try {
-    chrome.tabs.query({}, (tabs) => {
-      for (let tab of tabs) {
-        chrome.tabs.reload(tab.id);
-      }
-    });
-  } catch (error) {
-    throw error;
-  }
-}
-
-/************************************************************
  * configureUninstallUrl
  ************************************************************/
 async function configureUninstallUrl() {
@@ -325,6 +310,7 @@ async function updateBlockRules(adjustedRules) {
     ) {
       return;
     }
+
     const removeRuleIds = existingRules.map((r) => r.id);
     if (removeRuleIds.length > 0) {
       await chrome.declarativeNetRequest.updateDynamicRules({
@@ -347,93 +333,111 @@ async function updateBlockRules(adjustedRules) {
 /************************************************************
  * Other Handlers (Whitelist, Block, etc.)
  ************************************************************/
-async function handleWhitelistDomain(message, sendResponse) {
+async function handleWhitelistOperation(message, sendResponse) {
   try {
-    const { domain } = message.payload;
+    const { domain, action } = message.payload;
+
+    // Retrieve the current whitelisted sites.
     let { whitelistedSites = [] } = await chrome.storage.local.get([
       "whitelistedSites",
     ]);
-    if (!whitelistedSites.includes(domain)) {
-      whitelistedSites.push(domain);
-    }
-    chrome.storage.local.set({ whitelistedSites });
-    const updateAnyway = await isDNRUpdateRequired();
-    const adjustedRules = await adjustRules(updateAnyway);
-    await updateBlockRules(adjustedRules);
-    sendResponse({ success: true });
-  } catch (err) {
-    console.error("Error in handleWhitelistDomain:", err);
-    sendResponse({ success: false, error: err.message });
-  }
-}
 
-async function handleRemoveWhitelistDomain(message, sendResponse) {
-  try {
-    const { domain } = message.payload;
-    let { whitelistedSites = [], whitelistedSitesRemoved = [] } =
-      await chrome.storage.local.get([
-        "whitelistedSites",
+    if (action === "add") {
+      // Add the domain if it isn't already present.
+      if (!whitelistedSites.includes(domain)) {
+        whitelistedSites.push(domain);
+        await chrome.storage.local.set({ whitelistedSites });
+      }
+    } else if (action === "remove") {
+      // Retrieve removed sites along with the current ones.
+      let { whitelistedSitesRemoved = [] } = await chrome.storage.local.get([
         "whitelistedSitesRemoved",
       ]);
-    whitelistedSites = whitelistedSites.filter(
-      (existingDomain) => existingDomain !== domain
-    );
-    whitelistedSitesRemoved.push(domain);
-    chrome.storage.local.set({ whitelistedSites, whitelistedSitesRemoved });
+
+      // Remove the domain from the whitelist.
+      whitelistedSites = whitelistedSites.filter(
+        (existingDomain) => existingDomain !== domain
+      );
+      // Optionally add it to a "removed" list.
+      whitelistedSitesRemoved.push(domain);
+
+      await chrome.storage.local.set({
+        whitelistedSites,
+        whitelistedSitesRemoved,
+      });
+    } else {
+      // Handle an unexpected action.
+      throw new Error("Invalid action specified in payload.");
+    }
+
+    // Update rules after making changes.
     const updateAnyway = await isDNRUpdateRequired();
     const adjustedRules = await adjustRules(updateAnyway);
     await updateBlockRules(adjustedRules);
-    chrome.storage.local.set({ whitelistedSitesRemoved: [] });
+
+    // Optionally, clear the removed sites after processing.
+    if (action === "remove") {
+      await chrome.storage.local.set({ whitelistedSitesRemoved: [] });
+    }
+
     sendResponse({ success: true });
   } catch (err) {
-    console.error("Error in handleRemoveWhitelistDomain:", err);
+    console.error("Error in handleWhitelistOperation:", err);
     sendResponse({ success: false, error: err.message });
   }
 }
 
-async function handleBlockDomain(message, sendResponse) {
+async function handleBlockOperation(message, sendResponse) {
   try {
-    const { domain } = message.payload;
+    const { domain, action } = message.payload;
+
+    console.log(action);
+
+    // Retrieve current blocked sites.
     let { foreverBlockedSites = [] } = await chrome.storage.local.get([
       "foreverBlockedSites",
     ]);
-    if (!foreverBlockedSites.includes(domain)) {
-      foreverBlockedSites.push(domain);
-    }
-    chrome.storage.local.set({ foreverBlockedSites });
-    const updateAnyway = await isDNRUpdateRequired();
-    const adjustedRules = await adjustRules(updateAnyway);
-    await updateBlockRules(adjustedRules);
-    sendResponse({ success: true });
-  } catch (err) {
-    console.error("Error in handleBlockDomain:", err);
-    sendResponse({ success: false, error: err.message });
-  }
-}
 
-async function handleRemoveBlockDomain(message, sendResponse) {
-  try {
-    const { domain } = message.payload;
-    let { foreverBlockedSites = [], foreverBlockedSitesRemoved = [] } =
-      await chrome.storage.local.get([
-        "foreverBlockedSites",
+    if (action === "add") {
+      // If the domain is not already blocked, add it.
+      if (!foreverBlockedSites.includes(domain)) {
+        foreverBlockedSites.push(domain);
+        await chrome.storage.local.set({ foreverBlockedSites });
+      }
+    } else if (action === "remove") {
+      // Retrieve the list of removed blocked sites.
+      let { foreverBlockedSitesRemoved = [] } = await chrome.storage.local.get([
         "foreverBlockedSitesRemoved",
       ]);
-    foreverBlockedSites = foreverBlockedSites.filter(
-      (existingDomain) => existingDomain !== domain
-    );
-    foreverBlockedSitesRemoved.push(domain);
-    chrome.storage.local.set({
-      foreverBlockedSites,
-      foreverBlockedSitesRemoved,
-    });
+
+      // Remove the domain from the blocked list.
+      foreverBlockedSites = foreverBlockedSites.filter(
+        (existingDomain) => existingDomain !== domain
+      );
+      // Optionally, add it to a "removed" list.
+      foreverBlockedSitesRemoved.push(domain);
+
+      await chrome.storage.local.set({
+        foreverBlockedSites,
+        foreverBlockedSitesRemoved,
+      });
+    } else {
+      throw new Error("Invalid action specified in payload.");
+    }
+
+    // Update rules after modifying blocked sites.
     const updateAnyway = await isDNRUpdateRequired();
     const adjustedRules = await adjustRules(updateAnyway);
     await updateBlockRules(adjustedRules);
-    chrome.storage.local.set({ foreverBlockedSitesRemoved: [] });
+
+    // Optionally, clear the removed sites after processing.
+    if (action === "remove") {
+      await chrome.storage.local.set({ foreverBlockedSitesRemoved: [] });
+    }
+
     sendResponse({ success: true });
   } catch (err) {
-    console.error("Error in handleRemoveBlockDomain:", err);
+    console.error("Error in handleBlockOperation:", err);
     sendResponse({ success: false, error: err.message });
   }
 }
@@ -517,17 +521,11 @@ async function handleAutoCloseAll(message, sendResponse) {
  ************************************************************/
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.type) {
-    case "WHITELIST_DOMAIN":
-      handleWhitelistDomain(message, sendResponse);
+    case "whitelistOperation":
+      handleWhitelistOperation(message, sendResponse);
       return true;
-    case "REMOVE_WHITELIST_DOMAIN":
-      handleRemoveWhitelistDomain(message, sendResponse);
-      return true;
-    case "BLOCK_DOMAIN":
-      handleBlockDomain(message, sendResponse);
-      return true;
-    case "REMOVE_BLOCK_DOMAIN":
-      handleRemoveBlockDomain(message, sendResponse);
+    case "blockOperation":
+      handleBlockOperation(message, sendResponse);
       return true;
     case "RESET_EXTENSION":
       handleResetExtension(message, sendResponse);

@@ -206,8 +206,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Send a message to the background script to whitelist (unblock) the domain
         chrome.runtime.sendMessage(
           {
-            type: "WHITELIST_DOMAIN",
-            payload: { domain },
+            type: "whitelistOperation",
+            payload: { domain, action: "add" },
           },
           (response) => {
             if (chrome.runtime.lastError || !response?.success) {

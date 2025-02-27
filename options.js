@@ -109,8 +109,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       false
     );
     chrome.runtime.sendMessage({
-      type: "WHITELIST_DOMAIN",
-      payload: { domain },
+      type: "whitelistOperation",
+      payload: { domain, action: "add" },
     });
   }
 
@@ -130,8 +130,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       await chrome.storage.local.set({ whitelistedSites });
       renderWhitelistedList();
       chrome.runtime.sendMessage({
-        type: "REMOVE_WHITELIST_DOMAIN",
-        payload: { domain },
+        type: "whitelistOperation",
+        payload: { domain, action: "remove" },
       });
     });
   }
@@ -165,8 +165,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderBlockedList();
     toggleAddForm(blockedAddForm, blockedDomainInput, blockedErrorMsg, false);
     chrome.runtime.sendMessage({
-      type: "BLOCK_DOMAIN",
-      payload: { domain },
+      type: "blockOperation",
+      payload: { domain, action: "add" },
     });
   }
 
@@ -182,8 +182,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       await chrome.storage.local.set({ foreverBlockedSites: blockedSites });
       renderBlockedList();
       chrome.runtime.sendMessage({
-        type: "REMOVE_BLOCK_DOMAIN",
-        payload: { domain },
+        type: "blockOperation",
+        payload: { domain, action: "remove" },
       });
     });
   }
