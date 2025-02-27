@@ -18,8 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
       { adBlockingEnabled: adBlockingCheckbox.checked },
       () => {
         chrome.runtime.sendMessage({
-          type: "TOGGLE_AD_BLOCKING",
-          payload: { adBlockingEnabled: adBlockingCheckbox.checked },
+          type: "featureOperation",
+          payload: {
+            adBlockingEnabled: adBlockingCheckbox.checked,
+            feature: "abd",
+          },
         });
       }
     );
@@ -30,8 +33,11 @@ document.addEventListener("DOMContentLoaded", () => {
       { phishingWarningEnabled: phishingCheckbox.checked },
       () => {
         chrome.runtime.sendMessage({
-          type: "TOGGLE_PHISHING",
-          payload: { phishingWarningEnabled: phishingCheckbox.checked },
+          type: "featureOperation",
+          payload: {
+            phishingWarningEnabled: phishingCheckbox.checked,
+            feature: "phishing",
+          },
         });
       }
     );

@@ -13,7 +13,7 @@
 
   if (type === "top") {
     chrome.runtime.sendMessage({
-      type: "GET_CURRENT_TAB_ID",
+      type: "currentTabInfo",
       payload: { option: 1, domain, name: "block" },
     });
   }
@@ -26,7 +26,7 @@
   let tabId = null;
   chrome.runtime.sendMessage(
     {
-      type: "GET_CURRENT_TAB_ID",
+      type: "currentTabInfo",
       payload: { option: 2, domain, name: null },
     },
     (response) => {

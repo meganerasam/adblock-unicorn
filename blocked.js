@@ -127,8 +127,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Send a message to the background script to auto close all popups
         chrome.runtime.sendMessage(
           {
-            type: "AUTO_CLOSE_ALL",
-            payload: { autoCloseAllEnabled: true },
+            type: "featureOperation",
+            payload: { autoCloseAllEnabled: true, feature: "disturbance" },
           },
           (response) => {
             if (chrome.runtime.lastError || !response?.success) {
@@ -154,8 +154,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Send a message to the background script to auto close all popups
       chrome.runtime.sendMessage(
         {
-          type: "AUTO_CLOSE_ALL",
-          payload: { autoCloseAllEnabled: true },
+          type: "featureOperation",
+          payload: { autoCloseAllEnabled: true, feature: "disturbance" },
         },
         (response) => {
           if (chrome.runtime.lastError || !response?.success) {

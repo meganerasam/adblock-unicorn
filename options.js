@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       )
     ) {
       chrome.runtime.sendMessage(
-        { type: "RESET_EXTENSION", payload: {} },
+        { type: "featureOperation", payload: { feature: "reset" } },
         (response) => {
           if (response && response.success) {
             location.reload();
@@ -286,21 +286,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------
   // Initialize Checkbox Settings using helper
   // -------------------------------
-  initializeCheckbox(
-    adBlockingCheckbox,
-    "adBlockingEnabled",
-    "TOGGLE_AD_BLOCKING"
-  );
-  initializeCheckbox(
-    autoCloseCheckbox,
-    "autoCloseAllEnabled",
-    "AUTO_CLOSE_ALL"
-  );
-  initializeCheckbox(
-    phishingCheckbox,
-    "phishingWarningEnabled",
-    "TOGGLE_PHISHING"
-  );
+  initializeCheckbox(adBlockingCheckbox, "adBlockingEnabled", "abd");
+  initializeCheckbox(autoCloseCheckbox, "autoCloseAllEnabled", "disturbance");
+  initializeCheckbox(phishingCheckbox, "phishingWarningEnabled", "phishing");
 
   // -------------------------------
   // Initialize Stored Data and Render Lists

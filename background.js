@@ -4,12 +4,11 @@
 import { setStorage, updateStorageForKey } from "./helper/storage.js";
 import { updateRuleCondition } from "./helper/rules.js";
 
-const API_URL_RULES = "https://adblock-unicorn.com/ext/adbunicorn.php"; // Replace with your actual PHP script URL
-const API_URL = "adblock-unicorn.com"; // Replace with your actual PHP script URL
+const API_URL = "https://adblock-unicorn.com/ext"; // Replace with your actual PHP script URL
 const HEADERS = { "Content-Type": "application/json" };
 
-let currentlyRequesting = false;
-let retryTimeoutScheduled = true;
+let requestInProgress = false;
+let retryAgain = true;
 
 /************************************************************
  * HELPER: extractDomain
@@ -39,9 +38,9 @@ async function fetchJSONFile(fileName) {
 }
 
 /************************************************************
- * HELPER: reloadSpecificPage
+ * HELPER: redirectToSpecificPage
  ************************************************************/
-async function reloadSpecificPage(pageName, hash = "") {
+async function redirectToSpecificPage(pageName, hash = "") {
   try {
     const pageUrl = chrome.runtime.getURL(pageName) + hash;
     const queryUrl = chrome.runtime.getURL(pageName) + "*";
@@ -65,7 +64,7 @@ async function configureUninstallUrl() {
   queryParams += `&extid=${chrome.runtime.id}&extv=${
     chrome.runtime.getManifest().version
   }`;
-  const url = `https://${API_URL}/ext/uninstall-unicorn.php${queryParams}`;
+  const url = `${API_URL}/uninstall-unicorn.php${queryParams}`;
   chrome.runtime.setUninstallURL(url);
 }
 
@@ -121,6 +120,7 @@ async function fetchAndStoreDefaultPhishingSites() {
     const { phishingWarningEnabled } = await chrome.storage.local.get([
       "phishingWarningEnabled",
     ]);
+    console.log("phishingWarningEnabled", phishingWarningEnabled);
     if (!phishingWarningEnabled) {
       chrome.storage.local.set({ phishingDomainsData: [] });
     } else {
@@ -162,6 +162,37 @@ async function fetchAndStoreDefaultAdSites() {
 }
 
 /************************************************************
+ * loadDefaultFeatures
+ ************************************************************/
+async function loadDefaultFeatures() {
+  try {
+    await fetchAndStoreDefaultPhishingSites();
+    await fetchAndStoreDefaultAdSites();
+  } catch (err) {
+    // Handle error
+  }
+}
+
+/************************************************************
+ * setInitialStorage
+ ************************************************************/
+async function setInitialStorage() {
+  try {
+    await setStorage(chrome.storage.local, {
+      whitelistedSites: [],
+      whitelistedSitesRemoved: [],
+      foreverBlockedSites: [],
+      foreverBlockedSitesRemoved: [],
+      phishingWarningEnabled: true,
+      adBlockingEnabled: true,
+      autoCloseAllEnabled: true,
+    });
+  } catch (err) {
+    // Handle error
+  }
+}
+
+/************************************************************
  * fetchAndStoreUpToDateData
  ************************************************************/
 async function fetchAndStoreUpToDateData() {
@@ -174,15 +205,15 @@ async function fetchAndStoreUpToDateData() {
       ]);
     syncData.whitelistedSites = whitelistedSites;
     syncData.foreverBlockedSites = foreverBlockedSites;
-    const response = await fetch(API_URL_RULES, {
+    const response = await fetch(`${API_URL}/adbunicorn.php`, {
       method: "POST",
       headers: HEADERS,
       body: JSON.stringify(syncData),
     });
     if (!response.ok) {
       const errorText = await response.text();
-      currentlyRequesting = false;
-      retryTimeoutScheduled = true;
+      requestInProgress = false;
+      retryAgain = true;
       throw new Error(
         `Failed to fetch data: ${response.status} ${response.statusText} - ${errorText}`
       );
@@ -191,8 +222,8 @@ async function fetchAndStoreUpToDateData() {
     try {
       if (response.headers.get("Content-Type").includes("application/json")) {
         let data = JSON.parse(jsontext);
-        currentlyRequesting = false;
-        retryTimeoutScheduled = true;
+        requestInProgress = false;
+        retryAgain = true;
         for (const [key, value] of Object.entries(data)) {
           await updateStorageForKey(key, value);
         }
@@ -200,8 +231,8 @@ async function fetchAndStoreUpToDateData() {
         configureUninstallUrl();
         return data;
       } else {
-        currentlyRequesting = false;
-        retryTimeoutScheduled = true;
+        requestInProgress = false;
+        retryAgain = true;
       }
     } catch (error) {
       console.error("Error parsing JSON:", error);
@@ -216,26 +247,23 @@ async function fetchAndStoreUpToDateData() {
  * isDNRUpdateRequired
  ************************************************************/
 async function isDNRUpdateRequired(updateAnyway = false) {
-  if (currentlyRequesting === true && updateAnyway === false) return false;
-  currentlyRequesting = true;
+  if (requestInProgress === true && updateAnyway === false) return false;
+  requestInProgress = true;
   let syncData = await chrome.storage.sync.get(null);
   let lastUpdateTime = syncData.lastUpdateTime || Date.now();
   let ucycle = syncData.ucycle || 0;
   let uinfo = syncData.uinfo || null;
-  if (
-    (uinfo == null || typeof uinfo === "undefined") &&
-    retryTimeoutScheduled
-  ) {
-    retryTimeoutScheduled = false;
+  if ((uinfo == null || typeof uinfo === "undefined") && retryAgain) {
+    retryAgain = false;
     await new Promise((resolve) => setTimeout(resolve, 5000));
-    currentlyRequesting = false;
+    requestInProgress = false;
     return await isDNRUpdateRequired();
   }
   if (updateAnyway || lastUpdateTime + ucycle < Date.now() || ucycle === 0) {
     return true;
   } else {
-    currentlyRequesting = false;
-    retryTimeoutScheduled = true;
+    requestInProgress = false;
+    retryAgain = true;
     return false;
   }
 }
@@ -331,6 +359,64 @@ async function updateBlockRules(adjustedRules) {
 }
 
 /************************************************************
+ * updateDNR
+ ************************************************************/
+async function updateDNR(forceUpdate = false) {
+  const shouldUpdate = forceUpdate ? true : await isDNRUpdateRequired();
+  const adjustedRules = await adjustRules(shouldUpdate);
+  await updateBlockRules(adjustedRules);
+}
+
+/************************************************************
+ * FEATURES FUNCTIONS
+ ************************************************************/
+async function handleAdbFeature(message) {
+  try {
+    const { adBlockingEnabled } = message.payload;
+    chrome.storage.local.set({ adBlockingEnabled });
+    await loadDefaultFeatures();
+    if (adBlockingEnabled) {
+      await updateDNR(true);
+    } else {
+      await updateDNR();
+    }
+  } catch (err) {
+    console.error("Error in handleToggleAdBlocking:", err);
+  }
+}
+
+async function handlePhishingFeature(message) {
+  try {
+    const { phishingWarningEnabled } = message.payload;
+    await chrome.storage.local.set({ phishingWarningEnabled });
+    await loadDefaultFeatures();
+    await updateDNR();
+  } catch (err) {
+    console.error("Error in handleTogglePhishingWarning:", err);
+  }
+}
+
+async function handleDisturbanceFeature(message) {
+  try {
+    const { autoCloseAllEnabled } = message.payload;
+    chrome.storage.local.set({ autoCloseAllEnabled });
+  } catch (err) {
+    console.error("Error in handleHideDisturbance:", err);
+  }
+}
+
+async function handleReseFeature() {
+  try {
+    await setInitialStorage();
+    await loadDefaultFeatures();
+    await updateDNR(true);
+    await redirectToSpecificPage("options.html", "#/filters");
+  } catch (err) {
+    console.error("Error in handleReseFeature:", err);
+  }
+}
+
+/************************************************************
  * Other Handlers (Whitelist, Block, etc.)
  ************************************************************/
 async function handleWhitelistOperation(message, sendResponse) {
@@ -371,9 +457,7 @@ async function handleWhitelistOperation(message, sendResponse) {
     }
 
     // Update rules after making changes.
-    const updateAnyway = await isDNRUpdateRequired();
-    const adjustedRules = await adjustRules(updateAnyway);
-    await updateBlockRules(adjustedRules);
+    await updateDNR();
 
     // Optionally, clear the removed sites after processing.
     if (action === "remove") {
@@ -426,9 +510,7 @@ async function handleBlockOperation(message, sendResponse) {
     }
 
     // Update rules after modifying blocked sites.
-    const updateAnyway = await isDNRUpdateRequired();
-    const adjustedRules = await adjustRules(updateAnyway);
-    await updateBlockRules(adjustedRules);
+    await updateDNR();
 
     // Optionally, clear the removed sites after processing.
     if (action === "remove") {
@@ -442,31 +524,34 @@ async function handleBlockOperation(message, sendResponse) {
   }
 }
 
-async function handleResetExtension(message, sendResponse) {
+async function handleFeatureOperation(message, sendResponse) {
+  console.log(message.payload);
   try {
-    chrome.storage.local.set({
-      whitelistedSites: [],
-      whitelistedSitesRemoved: [],
-      foreverBlockedSites: [],
-      foreverBlockedSitesRemoved: [],
-      phishingWarningEnabled: true,
-      adBlockingEnabled: true,
-      autoCloseAllEnabled: true,
-    });
-    await fetchAndStoreDefaultPhishingSites();
-    await fetchAndStoreDefaultAdSites();
-    const updateAnyway = true;
-    const adjustedRules = await adjustRules(updateAnyway);
-    await updateBlockRules(adjustedRules);
-    await reloadSpecificPage("options.html", "#/filters");
+    const payload = message.payload;
+    switch (payload.feature) {
+      case "abd":
+        handleAdbFeature(message);
+      case "phishing":
+        handlePhishingFeature(message);
+        break;
+      case "disturbance":
+        handleDisturbanceFeature(message);
+        break;
+      case "reset":
+        handleReseFeature();
+        break;
+      default:
+        console.log("Unknown feature:", message);
+    }
+
     sendResponse({ success: true });
   } catch (err) {
-    console.error("Error in handleResetExtension:", err);
+    console.error("Error in handleFeatureOperation:", err);
     sendResponse({ success: false, error: err.message });
   }
 }
 
-async function handleGetCurrentTabId(message, sendResponse) {
+async function handleCurrentTabInfo(message, sendResponse) {
   try {
     const { option, domain, name } = message.payload;
     if (option === 1 && name === "block") {
@@ -500,18 +585,7 @@ async function handleGetCurrentTabId(message, sendResponse) {
       });
     }
   } catch (err) {
-    console.error("Error in handleGetCurrentTabId:", err);
-    sendResponse({ success: false, error: err.message });
-  }
-}
-
-async function handleAutoCloseAll(message, sendResponse) {
-  try {
-    const { autoCloseAllEnabled } = message.payload;
-    chrome.storage.local.set({ autoCloseAllEnabled });
-    sendResponse({ success: true });
-  } catch (err) {
-    console.error("Error in handleAutoCloseAll:", err);
+    console.error("Error in handleCurrentTabInfo:", err);
     sendResponse({ success: false, error: err.message });
   }
 }
@@ -527,14 +601,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case "blockOperation":
       handleBlockOperation(message, sendResponse);
       return true;
-    case "RESET_EXTENSION":
-      handleResetExtension(message, sendResponse);
+    case "featureOperation":
+      handleFeatureOperation(message, sendResponse);
       return true;
-    case "GET_CURRENT_TAB_ID":
-      handleGetCurrentTabId(message, sendResponse);
-      return true;
-    case "AUTO_CLOSE_ALL":
-      handleAutoCloseAll(message, sendResponse);
+    case "currentTabInfo":
+      handleCurrentTabInfo(message, sendResponse);
       return true;
     default:
       console.warn("Unknown message type:", message.type);
@@ -546,12 +617,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
  * Alarms
  ************************************************************/
 chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name === "dailyReset") {
-    await fetchAndStoreDefaultPhishingSites();
-    await fetchAndStoreDefaultAdSites();
-    const updateAnyway = await isDNRUpdateRequired();
-    const adjustedRules = await adjustRules(updateAnyway);
-    await updateBlockRules(adjustedRules);
+  if (alarm.name === "quotidianRefresh") {
+    await loadDefaultFeatures();
+    await updateDNR();
   }
 });
 
@@ -560,28 +628,14 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
  ************************************************************/
 chrome.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === "install") {
-    chrome.alarms.create("dailyReset", { periodInMinutes: 60 * 24 });
+    chrome.alarms.create("quotidianRefresh", { periodInMinutes: 60 * 24 });
     processOnInstallTabs();
     closeChromeWebStoreDetailTabs();
-    chrome.storage.local.set({
-      whitelistedSites: [],
-      whitelistedSitesRemoved: [],
-      foreverBlockedSites: [],
-      foreverBlockedSitesRemoved: [],
-      phishingWarningEnabled: true,
-      adBlockingEnabled: true,
-      autoCloseAllEnabled: true,
-    });
-    await fetchAndStoreDefaultPhishingSites();
-    await fetchAndStoreDefaultAdSites();
-    const updateAnyway = true;
-    const adjustedRules = await adjustRules(updateAnyway);
-    await updateBlockRules(adjustedRules);
+    await setInitialStorage();
+    await loadDefaultFeatures();
+    await updateDNR(true);
   } else if (details.reason === "update") {
-    await fetchAndStoreDefaultPhishingSites();
-    await fetchAndStoreDefaultAdSites();
-    const updateAnyway = true;
-    const adjustedRules = await adjustRules(updateAnyway);
-    await updateBlockRules(adjustedRules);
+    await loadDefaultFeatures();
+    await updateDNR(true);
   }
 });

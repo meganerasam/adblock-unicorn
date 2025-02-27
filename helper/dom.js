@@ -44,21 +44,21 @@ export function attachRemoveListeners(listElement, callback) {
 // Generic checkbox initializer.
 // element: the checkbox element
 // storageKey: key to retrieve/store its value (boolean)
-// onChangeCallback: either a message type (string) or a callback function to invoke on change.
-export function initializeCheckbox(element, storageKey, onChangeCallback) {
+// feature: determine which message to call
+export function initializeCheckbox(element, storageKey, feature) {
   chrome.storage.local.get(storageKey, (data) => {
     element.checked = data[storageKey] !== false;
   });
   element.addEventListener("change", () => {
     const isChecked = element.checked;
     chrome.storage.local.set({ [storageKey]: isChecked });
-    if (typeof onChangeCallback === "function") {
-      onChangeCallback(isChecked);
-    } else if (typeof onChangeCallback === "string") {
-      chrome.runtime.sendMessage({
-        type: onChangeCallback,
-        payload: { [storageKey]: isChecked },
-      });
-    }
+    // Always send the unified 'featureOperation' message with the feature identifier
+    chrome.runtime.sendMessage({
+      type: "featureOperation",
+      payload: {
+        feature: feature,
+        [storageKey]: isChecked,
+      },
+    });
   });
 }
