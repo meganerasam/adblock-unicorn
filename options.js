@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------
   // Checkbox Elements (Ad‑Blocking, Auto Close, Phishing)
   // -------------------------------
-  const adBlockingCheckbox = document.getElementById("adBlockingToggle");
+  // const adBlockingCheckbox = document.getElementById("adBlockingToggle");
   const autoCloseCheckbox = document.getElementById("autoCloseToggle");
   const phishingCheckbox = document.getElementById("phishingToggle");
 
@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------
   // Initialize Checkbox Settings using helper
   // -------------------------------
-  initializeCheckbox(adBlockingCheckbox, "adBlockingEnabled", "abd");
+  // initializeCheckbox(adBlockingCheckbox, "adBlockingEnabled", "abd");
   initializeCheckbox(autoCloseCheckbox, "autoCloseAllEnabled", "disturbance");
   initializeCheckbox(phishingCheckbox, "phishingWarningEnabled", "phishing");
 
@@ -303,9 +303,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "local") {
-      if (changes.adBlockingEnabled) {
-        adBlockingCheckbox.checked = changes.adBlockingEnabled.newValue;
-      }
+      // if (changes.adBlockingEnabled) {
+      //   adBlockingCheckbox.checked = changes.adBlockingEnabled.newValue;
+      // }
       if (changes.autoCloseAllEnabled) {
         autoCloseCheckbox.checked = changes.autoCloseAllEnabled.newValue;
       }
