@@ -59,23 +59,6 @@
   let initialHeight = "0"; // e.g., "60px" or "80px"
   let backgroundColor = "transparent";
 
-  // Build the container style using values from characteristics.
-  let containerStyle = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: ${initialWidth};
-    height: ${initialHeight};
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    cursor: pointer;
-    overflow: hidden;
-    background-color: transparent;
-    transition: width 0.3s ease, border-radius 0.3s ease, opacity 1s ease;
-    opacity: 1;
-  `;
-
   // Wait for the DOM to be ready.
   function onReady(callback) {
     if (document.readyState === "loading") {
@@ -89,7 +72,6 @@
     // Create the container element.
     const bubble = document.createElement("div");
     bubble.id = "phishing-snackbar";
-    bubble.setAttribute("style", containerStyle);
 
     // Create and append the image element.
     if (imageConfig && imageConfig.attributes) {
@@ -123,13 +105,11 @@
       initialHeight = characteristicsConfig.size.height
         ? characteristicsConfig.size.height
         : initialHeight;
-      backgroundColor = characteristicsConfig.backgroundColor
-        ? characteristicsConfig.backgroundColor
-        : backgroundColor;
 
       console.log(backgroundColor);
+    }
 
-      containerStyle = `
+    let containerStyle = `
         position: fixed;
         bottom: 20px;
         right: 20px;
@@ -144,8 +124,7 @@
         transition: width 0.3s ease, border-radius 0.3s ease, opacity 1s ease;
         opacity: 1;
       `;
-      bubble.setAttribute("style", containerStyle);
-    }
+    bubble.setAttribute("style", containerStyle);
 
     // Save the original width (as a number) for later.
     const originalWidth = parseInt(initialWidth, 10);
@@ -160,7 +139,9 @@
         // Add extra padding (e.g., 20px) for spacing.
         const expandedWidth = originalWidth + messageWidth + 20;
         bubble.style.width = expandedWidth + "px";
-        bubble.style.background = backgroundColor;
+        bubble.style.background = characteristicsConfig.backgroundColor
+          ? characteristicsConfig.backgroundColor
+          : backgroundColor;
         bubble.style.paddingLeft = "10px";
       }
     });

@@ -19,7 +19,8 @@
   },
   "host_permissions": ["<all_urls>"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
@@ -41,7 +42,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["blocked.html", "json/*.json", "res/*.png"],
+      "resources": ["blocked.html", "helper/*.js", "json/*.json", "res/*.png"],
       "matches": ["<all_urls>"]
     }
   ],

@@ -2,6 +2,14 @@
  * options.js
  ************************************************************/
 
+import { normalizeDomain } from "./helper/util.js";
+import {
+  toggleAddForm,
+  renderDomainList,
+  attachRemoveListeners,
+  initializeCheckbox,
+} from "./helper/dom.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------
   // Elements for Whitelisted Domains
@@ -38,18 +46,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Top Tabs Navigation Elements
   // -------------------------------
   const websitesTab = document.getElementById("websitesTab");
-  const settingsTab = document.getElementById("settingsTab");
+  const featuresTab = document.getElementById("featuresTab");
 
   // Content Sections for Tabs
   const websitesContent = document.getElementById("websitesContent");
-  const settingsContent = document.getElementById("settingsContent");
+  const featuresContent = document.getElementById("featuresContent");
 
   // -------------------------------
-  // Toggle Elements (Ad-Blocking, Auto Close, Phishing)
+  // Checkbox Elements (Ad‑Blocking, Auto Close, Phishing)
   // -------------------------------
-  const adBlockingToggle = document.getElementById("adBlockingToggle");
-  const autoCloseToggle = document.getElementById("autoCloseToggle");
-  const phishingToggle = document.getElementById("phishingToggle");
+  const adBlockingCheckbox = document.getElementById("adBlockingToggle");
+  const autoCloseCheckbox = document.getElementById("autoCloseToggle");
+  const phishingCheckbox = document.getElementById("phishingToggle");
 
   // -------------------------------
   // Data Arrays for Domains
@@ -58,38 +66,31 @@ document.addEventListener("DOMContentLoaded", async () => {
   let blockedSites = [];
 
   // -------------------------------
-  // Inline Add Form Functions
-  // -------------------------------
-  function toggleWhitelistAddForm(show) {
-    whitelistAddForm.style.display = show ? "flex" : "none";
-    whitelistErrorMsg.textContent = "";
-    if (show) whitelistDomainInput.focus();
-    else whitelistDomainInput.value = "";
-  }
-
-  function toggleBlockedAddForm(show) {
-    blockedAddForm.style.display = show ? "flex" : "none";
-    blockedErrorMsg.textContent = "";
-    if (show) blockedDomainInput.focus();
-    else blockedDomainInput.value = "";
-  }
-
-  // -------------------------------
-  // Whitelist Functionality
+  // Inline Add Form Functions using helper
   // -------------------------------
   showAddWhitelistSiteBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    toggleWhitelistAddForm(true);
+    toggleAddForm(
+      whitelistAddForm,
+      whitelistDomainInput,
+      whitelistErrorMsg,
+      true
+    );
   });
 
   cancelWhitelistBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    toggleWhitelistAddForm(false);
+    toggleAddForm(
+      whitelistAddForm,
+      whitelistDomainInput,
+      whitelistErrorMsg,
+      false
+    );
   });
 
   async function saveWhitelistDomain() {
     const rawDomain = whitelistDomainInput.value.trim();
-    const domain = normalizeDomainInput(rawDomain);
+    const domain = normalizeDomain(rawDomain);
     if (!domain) {
       whitelistErrorMsg.textContent = "Please enter a valid domain name.";
       return;
@@ -101,7 +102,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     whitelistedSites.push(domain);
     await chrome.storage.local.set({ whitelistedSites });
     renderWhitelistedList();
-    toggleWhitelistAddForm(false);
+    toggleAddForm(
+      whitelistAddForm,
+      whitelistDomainInput,
+      whitelistErrorMsg,
+      false
+    );
     chrome.runtime.sendMessage({
       type: "WHITELIST_DOMAIN",
       payload: { domain },
@@ -114,53 +120,38 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   function renderWhitelistedList() {
-    whitelistedList.innerHTML = "";
-    if (whitelistedSites.length === 0) {
-      const li = document.createElement("li");
-      li.classList.add("empty");
-      li.textContent = "No websites whitelisted";
-      whitelistedList.appendChild(li);
-      return;
-    }
-    whitelistedSites.forEach((domain) => {
-      const li = document.createElement("li");
-      li.innerHTML = `${domain} <button class="btn-remove" data-domain="${domain}"><i class="fas fa-trash"></i></button>`;
-      whitelistedList.appendChild(li);
-    });
-    attachWhitelistRemoveListeners();
-  }
-
-  function attachWhitelistRemoveListeners() {
-    document.querySelectorAll("#whitelistedList .btn-remove").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const domain = btn.getAttribute("data-domain");
-        whitelistedSites = whitelistedSites.filter((d) => d !== domain);
-        await chrome.storage.local.set({ whitelistedSites });
-        renderWhitelistedList();
-        chrome.runtime.sendMessage({
-          type: "REMOVE_WHITELIST_DOMAIN",
-          payload: { domain },
-        });
+    renderDomainList(
+      whitelistedList,
+      whitelistedSites,
+      "No domain whitelisted"
+    );
+    attachRemoveListeners(whitelistedList, async (domain) => {
+      whitelistedSites = whitelistedSites.filter((d) => d !== domain);
+      await chrome.storage.local.set({ whitelistedSites });
+      renderWhitelistedList();
+      chrome.runtime.sendMessage({
+        type: "REMOVE_WHITELIST_DOMAIN",
+        payload: { domain },
       });
     });
   }
 
   // -------------------------------
-  // Blocked Domains Functionality
+  // Blocked Domains Functionality using helper
   // -------------------------------
   showAddBlockedSiteBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    toggleBlockedAddForm(true);
+    toggleAddForm(blockedAddForm, blockedDomainInput, blockedErrorMsg, true);
   });
 
   cancelBlockedBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    toggleBlockedAddForm(false);
+    toggleAddForm(blockedAddForm, blockedDomainInput, blockedErrorMsg, false);
   });
 
   async function saveBlockedDomain() {
     const rawDomain = blockedDomainInput.value.trim();
-    const domain = normalizeDomainInput(rawDomain);
+    const domain = normalizeDomain(rawDomain);
     if (!domain) {
       blockedErrorMsg.textContent = "Please enter a valid domain name.";
       return;
@@ -172,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     blockedSites.push(domain);
     await chrome.storage.local.set({ foreverBlockedSites: blockedSites });
     renderBlockedList();
-    toggleBlockedAddForm(false);
+    toggleAddForm(blockedAddForm, blockedDomainInput, blockedErrorMsg, false);
     chrome.runtime.sendMessage({
       type: "BLOCK_DOMAIN",
       payload: { domain },
@@ -185,36 +176,42 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   function renderBlockedList() {
-    blockedList.innerHTML = "";
-    if (blockedSites.length === 0) {
-      const li = document.createElement("li");
-      li.classList.add("empty");
-      li.textContent = "No blocked domains";
-      blockedList.appendChild(li);
-      return;
-    }
-    blockedSites.forEach((domain) => {
-      const li = document.createElement("li");
-      li.innerHTML = `${domain} <button class="btn-remove" data-domain="${domain}"><i class="fas fa-trash"></i></button>`;
-      blockedList.appendChild(li);
-    });
-    attachBlockedRemoveListeners();
-  }
-
-  function attachBlockedRemoveListeners() {
-    document.querySelectorAll("#blockedList .btn-remove").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const domain = btn.getAttribute("data-domain");
-        blockedSites = blockedSites.filter((d) => d !== domain);
-        await chrome.storage.local.set({ foreverBlockedSites: blockedSites });
-        renderBlockedList();
-        chrome.runtime.sendMessage({
-          type: "REMOVE_BLOCK_DOMAIN",
-          payload: { domain },
-        });
+    renderDomainList(blockedList, blockedSites, "No blocked domain");
+    attachRemoveListeners(blockedList, async (domain) => {
+      blockedSites = blockedSites.filter((d) => d !== domain);
+      await chrome.storage.local.set({ foreverBlockedSites: blockedSites });
+      renderBlockedList();
+      chrome.runtime.sendMessage({
+        type: "REMOVE_BLOCK_DOMAIN",
+        payload: { domain },
       });
     });
   }
+
+  // -------------------------------
+  // Global Click Listener to Close Add Forms When Clicking Outside
+  // -------------------------------
+  document.addEventListener("click", (e) => {
+    // Close whitelist add form if open and click outside it (excluding the save button)
+    if (
+      whitelistAddForm.style.display === "flex" &&
+      !whitelistAddForm.contains(e.target)
+    ) {
+      toggleAddForm(
+        whitelistAddForm,
+        whitelistDomainInput,
+        whitelistErrorMsg,
+        false
+      );
+    }
+    // Close blocked add form if open and click outside it
+    if (
+      blockedAddForm.style.display === "flex" &&
+      !blockedAddForm.contains(e.target)
+    ) {
+      toggleAddForm(blockedAddForm, blockedDomainInput, blockedErrorMsg, false);
+    }
+  });
 
   // -------------------------------
   // Reset Extension Functionality
@@ -239,24 +236,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // -------------------------------
-  // Top Tabs Routing Setup (Websites & Settings)
+  // Top Tabs Routing Setup (Filters & Features)
   // -------------------------------
   const routes = {
-    "/websites": websitesContent,
-    "/settings": settingsContent,
+    "/filters": websitesContent,
+    "/features": featuresContent,
   };
 
   function navigate(path) {
     Object.values(routes).forEach((section) => {
       section.style.display = "none";
     });
-    const content = routes[path] || routes["/websites"];
+    const content = routes[path] || routes["/filters"];
     content.style.display = "block";
     updateActiveTab(path);
   }
 
   function updateActiveTab(path) {
-    [websitesTab, settingsTab].forEach((tab) => {
+    [websitesTab, featuresTab].forEach((tab) => {
       if (tab.getAttribute("href") === "#" + path) {
         tab.classList.add("active");
       } else {
@@ -265,7 +262,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  [websitesTab, settingsTab].forEach((tab) => {
+  [websitesTab, featuresTab].forEach((tab) => {
     tab.addEventListener("click", (e) => {
       e.preventDefault();
       const path = tab.getAttribute("href").replace("#", "");
@@ -275,7 +272,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   function initializeRouting() {
-    const hash = window.location.hash || "#/websites";
+    const hash = window.location.hash || "#/filters";
     const path = hash.replace("#/", "");
     navigate("/" + path);
   }
@@ -287,49 +284,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   initializeRouting();
 
   // -------------------------------
-  // Initialize Toggles (Ad-Blocking, Auto Close, Phishing)
+  // Initialize Checkbox Settings using helper
   // -------------------------------
-  function initializeAdBlockingToggle() {
-    chrome.storage.local.get("adBlockingEnabled", (data) => {
-      adBlockingToggle.checked = data.adBlockingEnabled !== false;
-    });
-    adBlockingToggle.addEventListener("change", () => {
-      const isEnabled = adBlockingToggle.checked;
-      chrome.storage.local.set({ adBlockingEnabled: isEnabled });
-      chrome.runtime.sendMessage({
-        type: "TOGGLE_AD_BLOCKING",
-        payload: { adBlockingEnabled: isEnabled },
-      });
-    });
-  }
-
-  function initializeAutoCloseToggle() {
-    chrome.storage.local.get("autoCloseAllEnabled", (data) => {
-      autoCloseToggle.checked = data.autoCloseAllEnabled;
-    });
-    autoCloseToggle.addEventListener("change", () => {
-      const isEnabled = autoCloseToggle.checked;
-      chrome.storage.local.set({ autoCloseAllEnabled: isEnabled });
-      chrome.runtime.sendMessage({
-        type: "AUTO_CLOSE_ALL",
-        payload: { autoCloseAllEnabled: isEnabled },
-      });
-    });
-  }
-
-  function initializePhishingWarningToggle() {
-    chrome.storage.local.get("phishingWarningEnabled", (data) => {
-      phishingToggle.checked = data.phishingWarningEnabled !== false;
-    });
-    phishingToggle.addEventListener("change", () => {
-      const isEnabled = phishingToggle.checked;
-      chrome.storage.local.set({ phishingWarningEnabled: isEnabled });
-      chrome.runtime.sendMessage({
-        type: "TOGGLE_PHISHING",
-        payload: { phishingWarningEnabled: isEnabled },
-      });
-    });
-  }
+  initializeCheckbox(
+    adBlockingCheckbox,
+    "adBlockingEnabled",
+    "TOGGLE_AD_BLOCKING"
+  );
+  initializeCheckbox(
+    autoCloseCheckbox,
+    "autoCloseAllEnabled",
+    "AUTO_CLOSE_ALL"
+  );
+  initializeCheckbox(
+    phishingCheckbox,
+    "phishingWarningEnabled",
+    "TOGGLE_PHISHING"
+  );
 
   // -------------------------------
   // Initialize Stored Data and Render Lists
@@ -345,13 +316,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "local") {
       if (changes.adBlockingEnabled) {
-        adBlockingToggle.checked = changes.adBlockingEnabled.newValue;
+        adBlockingCheckbox.checked = changes.adBlockingEnabled.newValue;
       }
       if (changes.autoCloseAllEnabled) {
-        autoCloseToggle.checked = changes.autoCloseAllEnabled.newValue;
+        autoCloseCheckbox.checked = changes.autoCloseAllEnabled.newValue;
       }
       if (changes.phishingWarningEnabled) {
-        phishingToggle.checked = changes.phishingWarningEnabled.newValue;
+        phishingCheckbox.checked = changes.phishingWarningEnabled.newValue;
       }
       if (changes.foreverBlockedSites) {
         blockedSites = changes.foreverBlockedSites.newValue;
@@ -359,50 +330,4 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   });
-
-  // Helper function to normalize domain input
-  function normalizeDomainInput(userInput) {
-    if (!userInput) return "";
-    let temp = userInput.trim();
-    if (!/^https?:\/\//i.test(temp)) {
-      temp = "https://" + temp;
-    }
-    try {
-      const hostname = new URL(temp).hostname;
-      return hostname.replace(/^www\./, "");
-    } catch (err) {
-      return userInput.trim();
-    }
-  }
-
-  // -------------------------------
-  // Global Click Listener to Cancel Add Forms When Clicking Outside
-  // -------------------------------
-  document.addEventListener("click", (e) => {
-    if (
-      whitelistAddForm.style.display === "flex" &&
-      !whitelistAddForm.contains(e.target) &&
-      e.target.id !== "showAddWhitelistSiteBtn"
-    ) {
-      toggleWhitelistAddForm(false);
-    }
-    if (
-      blockedAddForm.style.display === "flex" &&
-      !blockedAddForm.contains(e.target) &&
-      e.target.id !== "showAddBlockedSiteBtn"
-    ) {
-      toggleBlockedAddForm(false);
-    }
-  });
-
-  // Prevent clicks inside the add forms from propagating
-  whitelistAddForm.addEventListener("click", (e) => e.stopPropagation());
-  blockedAddForm.addEventListener("click", (e) => e.stopPropagation());
-
-  // -------------------------------
-  // Initialize Toggles
-  // -------------------------------
-  initializeAdBlockingToggle();
-  initializeAutoCloseToggle();
-  initializePhishingWarningToggle();
 });

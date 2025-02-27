@@ -66,8 +66,8 @@
   /* Dialog (Modal) - (not used now but kept for Reset) */
   --color-dialogbox-bg: var(--cool-gray-2);
   --color-dialogbox-text: var(--jet);
-  --color-button-cancel-bg: var(--cool-gray);
-  --color-button-cancel-hover-bg: var(--tufts-blue);
+  --color-button-cancel-bg: var(--cancel-red);
+  --color-button-cancel-hover-bg: var(--cancel-red-hover);
 }
 
 /* ========================================
@@ -146,14 +146,14 @@ body {
 }
 
 /* ========================================
-   Websites Columns (Side-by-Side Layout)
+   Filters Columns (Side-by-Side Layout)
 ======================================== */
-.websites-columns {
+.filters-columns {
   display: flex;
   gap: 50px;
 }
 
-.websites-menu {
+.filters-menu {
   flex: 1;
 }
 
@@ -231,6 +231,26 @@ body {
 
 .add-form button:hover {
   background-color: var(--color-active-button-hover);
+}
+
+/* ========================================
+   Cancel Button Style
+   (Using cancel-red and cancel-red-hover)
+======================================== */
+#cancelWhitelistBtn,
+#cancelBlockedBtn {
+  background-color: var(--cancel-red);
+  color: var(--color-body-text);
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#cancelWhitelistBtn:hover,
+#cancelBlockedBtn:hover {
+  background-color: var(--cancel-red-hover);
 }
 
 /* ========================================

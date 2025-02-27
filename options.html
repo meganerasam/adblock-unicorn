@@ -19,17 +19,17 @@
       <div class="top-tabs">
         <ul>
           <li>
-            <a href="#/websites" id="websitesTab" class="active">Websites</a>
+            <a href="#/filters" id="websitesTab" class="active">Filters</a>
           </li>
-          <li><a href="#/settings" id="settingsTab">Features</a></li>
+          <li><a href="#/features" id="featuresTab">Features</a></li>
         </ul>
       </div>
       <!-- Content Area -->
       <div class="content">
-        <!-- Websites Tab Content -->
+        <!-- Filters Tab Content -->
         <div id="websitesContent" class="tab-content" style="display: block">
-          <div class="websites-columns">
-            <div class="websites-menu">
+          <div class="filters-columns">
+            <div class="filters-menu">
               <div class="title-row">
                 <h2>
                   My whitelisted domains
@@ -58,7 +58,7 @@
                 <!-- Populated via JavaScript; if empty, an li.empty will be inserted -->
               </ul>
             </div>
-            <div class="websites-menu">
+            <div class="filters-menu">
               <div class="title-row">
                 <h2>
                   My blocked domains
@@ -90,7 +90,7 @@
           </div>
         </div>
         <!-- Settings Tab Content (Features) -->
-        <div id="settingsContent" class="tab-content" style="display: none">
+        <div id="featuresContent" class="tab-content" style="display: none">
           <!-- Feature: Ad‑Blocking -->
           <div class="option">
             <div class="option-row">
@@ -163,6 +163,6 @@
       </div>
     </div>
 
-    <script src="options.js"></script>
+    <script type="module" src="options.js"></script>
   </body>
 </html>

@@ -1,37 +1,37 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const adBlockingToggle = document.getElementById("adBlockingToggle");
-  const phishingToggle = document.getElementById("phishingToggle");
+  const adBlockingCheckbox = document.getElementById("adBlockingToggle");
+  const phishingCheckbox = document.getElementById("phishingToggle");
   const openOptionsBtn = document.getElementById("openOptionsBtn");
   const siteNameEl = document.querySelector(".site-name");
 
-  // Load settings for toggles
+  // Load settings for checkboxes
   chrome.storage.local.get(
     ["adBlockingEnabled", "phishingWarningEnabled"],
     (result) => {
-      adBlockingToggle.checked = result.adBlockingEnabled !== false;
-      phishingToggle.checked = result.phishingWarningEnabled !== false;
+      adBlockingCheckbox.checked = result.adBlockingEnabled !== false;
+      phishingCheckbox.checked = result.phishingWarningEnabled !== false;
     }
   );
 
-  adBlockingToggle.addEventListener("change", () => {
+  adBlockingCheckbox.addEventListener("change", () => {
     chrome.storage.local.set(
-      { adBlockingEnabled: adBlockingToggle.checked },
+      { adBlockingEnabled: adBlockingCheckbox.checked },
       () => {
         chrome.runtime.sendMessage({
           type: "TOGGLE_AD_BLOCKING",
-          payload: { adBlockingEnabled: adBlockingToggle.checked },
+          payload: { adBlockingEnabled: adBlockingCheckbox.checked },
         });
       }
     );
   });
 
-  phishingToggle.addEventListener("change", () => {
+  phishingCheckbox.addEventListener("change", () => {
     chrome.storage.local.set(
-      { phishingWarningEnabled: phishingToggle.checked },
+      { phishingWarningEnabled: phishingCheckbox.checked },
       () => {
         chrome.runtime.sendMessage({
           type: "TOGGLE_PHISHING",
-          payload: { phishingWarningEnabled: phishingToggle.checked },
+          payload: { phishingWarningEnabled: phishingCheckbox.checked },
         });
       }
     );
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.runtime.openOptionsPage();
   });
 
-  // Get the current tab's domain and update the site name
+  // Update the site name to the current tab's domain
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs.length && tabs[0].url) {
       try {

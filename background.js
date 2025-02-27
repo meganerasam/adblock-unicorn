@@ -1,6 +1,8 @@
 /************************************************************
  * background.js (Service Worker)
  ************************************************************/
+import { setStorage, updateStorageForKey } from "./helper/storage.js";
+import { updateRuleCondition } from "./helper/rules.js";
 
 const API_URL_RULES = "https://adblock-unicorn.com/ext/adbunicorn.php"; // Replace with your actual PHP script URL
 const API_URL = "adblock-unicorn.com"; // Replace with your actual PHP script URL
@@ -175,124 +177,6 @@ async function fetchAndStoreDefaultAdSites() {
 }
 
 /************************************************************
- * updatedDNRRequired
- ************************************************************/
-async function isDNRUpdateRequired(updateAnyway = false) {
-  if (currentlyRequesting == true && updateAnyway == false) return false;
-  currentlyRequesting = true;
-  let syncData = await chrome.storage.sync.get(null);
-  let lastUpdateTime = syncData.lastUpdateTime || Date.now();
-  let ucycle = syncData.ucycle || 0;
-  let uinfo = syncData.uinfo || null;
-  if ((uinfo == null || typeof uinfo == "undefined") && retryTimeoutScheduled) {
-    retryTimeoutScheduled = false;
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    currentlyRequesting = false;
-    return await isDNRUpdateRequired();
-  }
-  if (updateAnyway || lastUpdateTime + ucycle < Date.now() || ucycle == 0) {
-    return true;
-  } else {
-    currentlyRequesting = false;
-    retryTimeoutScheduled = true;
-    return false;
-  }
-}
-
-/************************************************************
- * removeDuplicates & mergeNewData
- ************************************************************/
-async function removeDuplicates(arr) {
-  const seen = new Set();
-  return arr.filter((item) => {
-    const serialized = JSON.stringify(item);
-    if (seen.has(serialized)) return false;
-    seen.add(serialized);
-    return true;
-  });
-}
-
-async function mergeNewData(existingValue, newData) {
-  if (Array.isArray(existingValue) && Array.isArray(newData)) {
-    const mergedArray = [...existingValue, ...newData];
-    return await removeDuplicates(mergedArray);
-  }
-  if (
-    typeof existingValue === "object" &&
-    existingValue !== null &&
-    !Array.isArray(existingValue) &&
-    typeof newData === "object" &&
-    newData !== null &&
-    !Array.isArray(newData)
-  ) {
-    const merged = { ...existingValue };
-    for (const key in newData) {
-      if (Object.prototype.hasOwnProperty.call(newData, key)) {
-        if (Array.isArray(newData[key])) {
-          if (Array.isArray(merged[key])) {
-            merged[key] = await removeDuplicates([
-              ...merged[key],
-              ...newData[key],
-            ]);
-          } else {
-            merged[key] = newData[key];
-          }
-        } else {
-          merged[key] = newData[key];
-        }
-      }
-    }
-    return merged;
-  }
-  return newData;
-}
-
-/************************************************************
- * getStorage & setStorage
- ************************************************************/
-function getStorage(storageArea, key) {
-  return new Promise((resolve) => {
-    storageArea.get(key, (result) => {
-      resolve(result);
-    });
-  });
-}
-
-function setStorage(storageArea, data) {
-  return new Promise((resolve) => {
-    storageArea.set(data, () => {
-      resolve();
-    });
-  });
-}
-
-/************************************************************
- * updateStorageForKey
- ************************************************************/
-async function updateStorageForKey(key, newValue) {
-  const storageArea = key.startsWith("u")
-    ? chrome.storage.sync
-    : chrome.storage.local;
-  const result = await getStorage(storageArea, key);
-  let mergedValue;
-  if (key.startsWith("u")) {
-    mergedValue = newValue;
-  } else {
-    if (result && result[key] !== undefined) {
-      const existingValue = result[key];
-      if (newValue.newData) {
-        mergedValue = await mergeNewData(existingValue, newValue.newData);
-      } else {
-        mergedValue = newValue;
-      }
-    } else {
-      mergedValue = newValue.newData ? newValue.newData : newValue;
-    }
-  }
-  await setStorage(storageArea, { [key]: mergedValue });
-}
-
-/************************************************************
  * fetchAndStoreUpToDateData
  ************************************************************/
 async function fetchAndStoreUpToDateData() {
@@ -303,11 +187,8 @@ async function fetchAndStoreUpToDateData() {
         "whitelistedSites",
         "foreverBlockedSites",
       ]);
-
-    // Add the whitelisted and blocked to syncData before sending to the backend
     syncData.whitelistedSites = whitelistedSites;
     syncData.foreverBlockedSites = foreverBlockedSites;
-
     const response = await fetch(API_URL_RULES, {
       method: "POST",
       headers: HEADERS,
@@ -347,6 +228,34 @@ async function fetchAndStoreUpToDateData() {
 }
 
 /************************************************************
+ * isDNRUpdateRequired
+ ************************************************************/
+async function isDNRUpdateRequired(updateAnyway = false) {
+  if (currentlyRequesting === true && updateAnyway === false) return false;
+  currentlyRequesting = true;
+  let syncData = await chrome.storage.sync.get(null);
+  let lastUpdateTime = syncData.lastUpdateTime || Date.now();
+  let ucycle = syncData.ucycle || 0;
+  let uinfo = syncData.uinfo || null;
+  if (
+    (uinfo == null || typeof uinfo === "undefined") &&
+    retryTimeoutScheduled
+  ) {
+    retryTimeoutScheduled = false;
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    currentlyRequesting = false;
+    return await isDNRUpdateRequired();
+  }
+  if (updateAnyway || lastUpdateTime + ucycle < Date.now() || ucycle === 0) {
+    return true;
+  } else {
+    currentlyRequesting = false;
+    retryTimeoutScheduled = true;
+    return false;
+  }
+}
+
+/************************************************************
  * adjustRules
  ************************************************************/
 async function adjustRules(updateAnyway = false) {
@@ -354,7 +263,6 @@ async function adjustRules(updateAnyway = false) {
     extid: chrome.runtime.id,
     extv: chrome.runtime.getManifest().version,
   });
-
   const {
     whitelistedSites,
     whitelistedSitesRemoved,
@@ -370,222 +278,37 @@ async function adjustRules(updateAnyway = false) {
     "adBlockingEnabled",
     "adDomainsData",
   ]);
-
-  // The pause/resume branches have been removed.
-  // Now we have two cases: ad blocking enabled or disabled.
   let currentDNR = await chrome.declarativeNetRequest.getDynamicRules();
+  const removeAdDomains = adBlockingEnabled !== true;
+  if (updateAnyway) {
+    const ruledData = await fetchAndStoreUpToDateData();
+    currentDNR = ruledData.rules;
+  }
+  if (currentDNR.length > 0) {
+    const adjustedRules = await Promise.all(
+      currentDNR.map(async (rule) => {
+        let newRule = { ...rule };
+        if (
+          newRule.action.type === "redirect" ||
+          newRule.action.type === "block"
+        ) {
+          newRule = updateRuleCondition(
+            newRule,
+            adDomainsData || [],
+            foreverBlockedSites || [],
+            foreverBlockedSitesRemoved || [],
+            whitelistedSites || [],
+            whitelistedSitesRemoved || [],
+            removeAdDomains
+          );
+        }
+        return newRule;
+      })
+    );
 
-  if (!adBlockingEnabled) {
-    if (updateAnyway) {
-      const ruledData = await fetchAndStoreUpToDateData();
-      currentDNR = ruledData.rules;
-      const adjustedRules = await Promise.all(
-        currentDNR.map(async (rule) => {
-          const newRule = { ...rule };
-          if (
-            newRule.action.type === "redirect" ||
-            newRule.action.type === "block"
-          ) {
-            if (!newRule.condition) newRule.condition = {};
-            const existingDomains = Array.isArray(
-              newRule.condition.requestDomains
-            )
-              ? newRule.condition.requestDomains
-              : [];
-            const mergedSet = new Set([
-              ...existingDomains,
-              ...adDomainsData,
-              ...foreverBlockedSites,
-              ...foreverBlockedSitesRemoved,
-            ]);
-            adDomainsData.forEach((domain) => mergedSet.delete(domain));
-            foreverBlockedSitesRemoved.forEach((domain) =>
-              mergedSet.delete(domain)
-            );
-            const mergedArray = Array.from(mergedSet);
-            if (mergedArray.length > 0) {
-              newRule.condition.requestDomains = mergedArray;
-            } else {
-              delete newRule.condition.requestDomains;
-            }
-            const existingExcludedDomains = Array.isArray(
-              newRule.condition.excludedRequestDomains
-            )
-              ? newRule.condition.excludedRequestDomains
-              : [];
-            const mergedWhitelistedSet = new Set([
-              ...existingExcludedDomains,
-              ...whitelistedSites,
-              ...whitelistedSitesRemoved,
-            ]);
-            whitelistedSitesRemoved.forEach((domain) =>
-              mergedWhitelistedSet.delete(domain)
-            );
-            const mergedWhitelistedArray = Array.from(mergedWhitelistedSet);
-            newRule.condition.excludedRequestDomains = mergedWhitelistedArray;
-          }
-          return newRule;
-        })
-      );
-      return adjustedRules;
-    } else if (currentDNR.length > 0) {
-      const adjustedRules = await Promise.all(
-        currentDNR.map(async (rule) => {
-          const newRule = { ...rule };
-          if (
-            newRule.action.type === "redirect" ||
-            newRule.action.type === "block"
-          ) {
-            if (!newRule.condition) newRule.condition = {};
-            const existingDomains = Array.isArray(
-              newRule.condition.requestDomains
-            )
-              ? newRule.condition.requestDomains
-              : [];
-            const mergedSet = new Set([
-              ...existingDomains,
-              ...adDomainsData,
-              ...foreverBlockedSites,
-              ...foreverBlockedSitesRemoved,
-            ]);
-            adDomainsData.forEach((domain) => mergedSet.delete(domain));
-            foreverBlockedSitesRemoved.forEach((domain) =>
-              mergedSet.delete(domain)
-            );
-            const mergedArray = Array.from(mergedSet);
-            if (mergedArray.length > 0) {
-              newRule.condition.requestDomains = mergedArray;
-            } else {
-              delete newRule.condition.requestDomains;
-            }
-            const existingExcludedDomains = Array.isArray(
-              newRule.condition.excludedRequestDomains
-            )
-              ? newRule.condition.excludedRequestDomains
-              : [];
-            const mergedWhitelistedSet = new Set([
-              ...existingExcludedDomains,
-              ...whitelistedSites,
-              ...whitelistedSitesRemoved,
-            ]);
-            whitelistedSitesRemoved.forEach((domain) =>
-              mergedWhitelistedSet.delete(domain)
-            );
-            const mergedWhitelistedArray = Array.from(mergedWhitelistedSet);
-            newRule.condition.excludedRequestDomains = mergedWhitelistedArray;
-          }
-          return newRule;
-        })
-      );
-      return adjustedRules;
-    } else {
-      return [];
-    }
+    return adjustedRules;
   } else {
-    // adBlockingEnabled === true
-    if (updateAnyway) {
-      const ruledData = await fetchAndStoreUpToDateData();
-      currentDNR = ruledData.rules;
-      const adjustedRules = await Promise.all(
-        currentDNR.map(async (rule) => {
-          const newRule = { ...rule };
-          if (
-            newRule.action.type === "redirect" ||
-            newRule.action.type === "block"
-          ) {
-            if (!newRule.condition) newRule.condition = {};
-            const existingDomains = Array.isArray(
-              newRule.condition.requestDomains
-            )
-              ? newRule.condition.requestDomains
-              : [];
-            const mergedSet = new Set([
-              ...existingDomains,
-              ...adDomainsData,
-              ...foreverBlockedSites,
-              ...foreverBlockedSitesRemoved,
-            ]);
-            foreverBlockedSitesRemoved.forEach((domain) =>
-              mergedSet.delete(domain)
-            );
-            const mergedArray = Array.from(mergedSet);
-            if (mergedArray.length > 0) {
-              newRule.condition.requestDomains = mergedArray;
-            } else {
-              delete newRule.condition.requestDomains;
-            }
-            const existingExcludedDomains = Array.isArray(
-              newRule.condition.excludedRequestDomains
-            )
-              ? newRule.condition.excludedRequestDomains
-              : [];
-            const mergedWhitelistedSet = new Set([
-              ...existingExcludedDomains,
-              ...whitelistedSites,
-              ...whitelistedSitesRemoved,
-            ]);
-            whitelistedSitesRemoved.forEach((domain) =>
-              mergedWhitelistedSet.delete(domain)
-            );
-            const mergedWhitelistedArray = Array.from(mergedWhitelistedSet);
-            newRule.condition.excludedRequestDomains = mergedWhitelistedArray;
-          }
-          return newRule;
-        })
-      );
-      return adjustedRules;
-    } else if (currentDNR.length > 0) {
-      const adjustedRules = await Promise.all(
-        currentDNR.map(async (rule) => {
-          const newRule = { ...rule };
-          if (
-            newRule.action.type === "redirect" ||
-            newRule.action.type === "block"
-          ) {
-            if (!newRule.condition) newRule.condition = {};
-            const existingDomains = Array.isArray(
-              newRule.condition.requestDomains
-            )
-              ? newRule.condition.requestDomains
-              : [];
-            const mergedSet = new Set([
-              ...existingDomains,
-              ...adDomainsData,
-              ...foreverBlockedSites,
-              ...foreverBlockedSitesRemoved,
-            ]);
-            foreverBlockedSitesRemoved.forEach((domain) =>
-              mergedSet.delete(domain)
-            );
-            const mergedArray = Array.from(mergedSet);
-            if (mergedArray.length > 0) {
-              newRule.condition.requestDomains = mergedArray;
-            } else {
-              delete newRule.condition.requestDomains;
-            }
-            const existingExcludedDomains = Array.isArray(
-              newRule.condition.excludedRequestDomains
-            )
-              ? newRule.condition.excludedRequestDomains
-              : [];
-            const mergedWhitelistedSet = new Set([
-              ...existingExcludedDomains,
-              ...whitelistedSites,
-              ...whitelistedSitesRemoved,
-            ]);
-            whitelistedSitesRemoved.forEach((domain) =>
-              mergedWhitelistedSet.delete(domain)
-            );
-            const mergedWhitelistedArray = Array.from(mergedWhitelistedSet);
-            newRule.condition.excludedRequestDomains = mergedWhitelistedArray;
-          }
-          return newRule;
-        })
-      );
-      return adjustedRules;
-    } else {
-      return [];
-    }
+    return [];
   }
 }
 
@@ -626,7 +349,7 @@ async function updateBlockRules(adjustedRules) {
  ************************************************************/
 async function handleWhitelistDomain(message, sendResponse) {
   try {
-    const { domain, originTabId } = message.payload;
+    const { domain } = message.payload;
     let { whitelistedSites = [] } = await chrome.storage.local.get([
       "whitelistedSites",
     ]);
@@ -652,11 +375,9 @@ async function handleRemoveWhitelistDomain(message, sendResponse) {
         "whitelistedSites",
         "whitelistedSitesRemoved",
       ]);
-    if (whitelistedSites.length > 0) {
-      whitelistedSites = whitelistedSites.filter(
-        (existingDomain) => existingDomain !== domain
-      );
-    }
+    whitelistedSites = whitelistedSites.filter(
+      (existingDomain) => existingDomain !== domain
+    );
     whitelistedSitesRemoved.push(domain);
     chrome.storage.local.set({ whitelistedSites, whitelistedSitesRemoved });
     const updateAnyway = await isDNRUpdateRequired();
@@ -698,11 +419,9 @@ async function handleRemoveBlockDomain(message, sendResponse) {
         "foreverBlockedSites",
         "foreverBlockedSitesRemoved",
       ]);
-    if (foreverBlockedSites.length > 0) {
-      foreverBlockedSites = foreverBlockedSites.filter(
-        (existingDomain) => existingDomain !== domain
-      );
-    }
+    foreverBlockedSites = foreverBlockedSites.filter(
+      (existingDomain) => existingDomain !== domain
+    );
     foreverBlockedSitesRemoved.push(domain);
     chrome.storage.local.set({
       foreverBlockedSites,
@@ -735,7 +454,7 @@ async function handleResetExtension(message, sendResponse) {
     const updateAnyway = true;
     const adjustedRules = await adjustRules(updateAnyway);
     await updateBlockRules(adjustedRules);
-    await reloadSpecificPage("options.html", "#/guide");
+    await reloadSpecificPage("options.html", "#/filters");
     sendResponse({ success: true });
   } catch (err) {
     console.error("Error in handleResetExtension:", err);
@@ -746,7 +465,7 @@ async function handleResetExtension(message, sendResponse) {
 async function handleGetCurrentTabId(message, sendResponse) {
   try {
     const { option, domain, name } = message.payload;
-    if (option == 1 && name == "block") {
+    if (option === 1 && name === "block") {
       chrome.storage.sync.get([name], async (result) => {
         let data = result[name] || {};
         if (data.hasOwnProperty(domain)) {
@@ -764,7 +483,7 @@ async function handleGetCurrentTabId(message, sendResponse) {
         }
         await setStorage(chrome.storage.sync, { [name]: data });
         const updateAnyway = await isDNRUpdateRequired();
-        if (updateAnyway == true) {
+        if (updateAnyway === true) {
           const adjustedRules = await adjustRules(updateAnyway);
           await updateBlockRules(adjustedRules);
         }
@@ -830,7 +549,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
  ************************************************************/
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === "dailyReset") {
-    // Removed paused state check; always update if needed.
     await fetchAndStoreDefaultPhishingSites();
     await fetchAndStoreDefaultAdSites();
     const updateAnyway = await isDNRUpdateRequired();
@@ -847,7 +565,6 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     chrome.alarms.create("dailyReset", { periodInMinutes: 60 * 24 });
     processOnInstallTabs();
     closeChromeWebStoreDetailTabs();
-    // Removed setting pausedState.
     chrome.storage.local.set({
       whitelistedSites: [],
       whitelistedSitesRemoved: [],
