@@ -92,7 +92,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Build the blocked message in the paragraph element
-    const paragraphEl = document.querySelector("p");
+    // const paragraphEl = document.querySelector("p");
+    const paragraphEl = document.getElementById("first");
     paragraphEl.textContent = "";
     const textBefore = document.createTextNode(
       chrome.i18n.getMessage("blockedTextBefore") + ' "'
@@ -106,12 +107,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     paragraphEl.appendChild(boldDomain);
     paragraphEl.appendChild(textAfter);
 
+    // Build the blocked message in the paragraph element
+    const paragraphEl2 = document.getElementById("second");
+    paragraphEl2.textContent = "";
+    const textBefore2 = document.createTextNode(
+      chrome.i18n.getMessage("blockedTextBefore2")
+    );
+    paragraphEl2.appendChild(textBefore2);
+
     /***************************************************
      * Primary action: Auto close ALL ads and popups
      ***************************************************/
     const closeAllPopupsBtn = document.getElementById("closeAllPopupsBtn");
 
-    let secondsLeft = 30;
+    let secondsLeft = 10;
     closeAllPopupsBtn.textContent = `${chrome.i18n.getMessage(
       "autoCloseAllMessage"
     )} (${secondsLeft}s)`;
@@ -180,7 +189,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const unblockDomainText = document.getElementById("unblockDomainText");
       unblockDomainText.style.display = "inline-block";
       // Hardcoded text with the domain in bold—no i18n key available for this line.
-      unblockDomainText.innerHTML = `Unblock <strong>${domain}</strong>: `;
+      unblockDomainText.innerHTML = `Unblock anyway: `;
 
       const unblockDomainBtn = document.getElementById("unblockDomainBtn");
       unblockDomainBtn.textContent = `${chrome.i18n.getMessage(

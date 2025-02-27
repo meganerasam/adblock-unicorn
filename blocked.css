@@ -2,15 +2,15 @@
    Dark Mode - Google Error Page Inspired Styles
    ------------------------------------------- */
    :root {
-    --bg-color: #202124;        /* Dark background */
-    --text-color: #e8eaed;       /* Light text */
-    --link-color: #8ab4f8;       /* Blue link */
+    --bg-color: #202124;         /* Dark background remains the same */
+    --text-color: #cad2c5;        /* New text color */
+    --link-color: #378ad8ff;      /* New link color (tufts-blue) */
     /* For the primary button (Reload-like blue) */
-    --primary-bg: #4285f4;
-    --primary-border: #4285f4;
-    --primary-text: #fff;
-    --button-bg: #303134;        /* Fallback button background */
-    --button-border: #5f6368;    /* Fallback button border */
+    --primary-bg: #378ad8ff;      /* New primary background (tufts-blue) */
+    --primary-border: #378ad8ff;  /* New primary border (tufts-blue) */
+    --primary-text: #fff;         /* Primary text remains white */
+    --button-bg: #3f3d43ff;       /* New fallback button background (jet-2) */
+    --button-border: #9287b2ff;   /* New fallback button border (cool-gray) */
   }
   
   body {
@@ -25,13 +25,14 @@
     max-width: 600px;
     margin: 100px auto;
     padding: 20px;
+    text-align: left;
   }
   
   /* Image Styles: slightly larger image */
   img {
-    width: 200px;
+    width: 90px;
     height: auto;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
   
   /* Heading Styles: Plain text */
@@ -44,14 +45,14 @@
   /* Paragraph Styles */
   p {
     font-size: 16px;
-    margin: 0 0 24px;
+    margin: 0 0 16px;
   }
   
   /* Primary Button Group Styles */
   .button-group {
     display: flex;
-    justify-content: center;
-    margin-bottom: 16px;
+    /* justify-content: center; */
+    margin-top: 40px;
   }
   
   /* Primary Button Styles (blue like Google’s Reload button) */
@@ -62,23 +63,21 @@
     color: var(--primary-text);
     background-color: var(--primary-bg);
     border: 1px solid var(--primary-border);
-    border-radius: 4px;
     text-decoration: none;
     cursor: pointer;
-    border-radius: 100px;
+    border-radius: 20px;
   }
   
   a.button:hover {
-    background-color: #3367d6;
+    background-color: #3367d6; /* Optionally update to a darker shade of tufts-blue */
   }
   
   /* Domain-Specific Block Options */
-  /* Added extra top margin for more space between the groups */
   .domain-block-options {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
-    margin-top: 75px;
+    /* margin-top: 75px; */
     margin-bottom: 16px;
     font-size: 14px;
     color: var(--text-color);
@@ -91,7 +90,7 @@
   /* Small Button Styles for Domain Options */
   .domain-buttons a.small-button {
     display: inline-block;
-    padding: 4px 8px;
+    padding: 1px 3px;
     font-size: 12px;
     color: var(--text-color);
     background-color: var(--button-bg);
@@ -103,14 +102,10 @@
   }
   
   .domain-buttons a.small-button:hover {
-    background-color: #3c4043;
+    background-color: #3c4043; /* Adjust if needed */
   }
   
   /* Link Group Styles (Settings Link) */
-  .link-group {
-    margin-top: 24px;
-  }
-  
   .link-group a {
     font-size: 14px;
     color: var(--link-color);

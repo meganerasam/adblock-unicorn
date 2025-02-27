@@ -20,17 +20,11 @@
     <!-- Container -->
     <div class="container">
       <!-- Slightly larger image/icon -->
-      <img alt="Site blocked" src="res/blocked2.png" />
+      <img alt="Site blocked" src="icons/icon-transparent.png" />
       <h1>__MSG_blockedPageTitle__</h1>
       <!-- Dynamic blocked message -->
-      <p></p>
-
-      <!-- Main action: one large button -->
-      <div class="button-group">
-        <a class="button" id="closeAllPopupsBtn" href="#"
-          >__MSG_autoCloseAllMessage__</a
-        >
-      </div>
+      <p id="first"></p>
+      <p id="second"></p>
 
       <!-- Domain-specific options (shown only if a domain is detected) -->
       <div class="domain-block-options">
@@ -49,6 +43,13 @@
       <div class="link-group">
         <a class="link" href="options.html" id="goToSettingsLink"
           >__MSG_goToSettings__</a
+        >
+      </div>
+
+      <!-- Main action: one large button -->
+      <div class="button-group">
+        <a class="button" id="closeAllPopupsBtn" href="#"
+          >__MSG_autoCloseAllMessage__</a
         >
       </div>
     </div>
