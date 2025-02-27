@@ -1,27 +1,27 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const adBlockingCheckbox = document.getElementById("adBlockingToggle");
-  const phishingCheckbox = document.getElementById("phishingToggle");
+  const smoothStreamCheckbox = document.getElementById("smoothStreamCheckbox");
+  const phishingCheckbox = document.getElementById("phishingCheckbox");
   const openOptionsBtn = document.getElementById("openOptionsBtn");
   const siteNameEl = document.querySelector(".site-name");
 
-  // Load settings for checkboxes
+  // Load settings for checkboxes using the appropriate storage keys.
   chrome.storage.local.get(
-    ["adBlockingEnabled", "phishingWarningEnabled"],
+    ["disturbanceEnabled", "phishingEnabled"],
     (result) => {
-      adBlockingCheckbox.checked = result.adBlockingEnabled !== false;
-      phishingCheckbox.checked = result.phishingWarningEnabled !== false;
+      smoothStreamCheckbox.checked = result.disturbanceEnabled !== false;
+      phishingCheckbox.checked = result.phishingEnabled !== false;
     }
   );
 
-  adBlockingCheckbox.addEventListener("change", () => {
+  smoothStreamCheckbox.addEventListener("change", () => {
     chrome.storage.local.set(
-      { adBlockingEnabled: adBlockingCheckbox.checked },
+      { disturbanceEnabled: smoothStreamCheckbox.checked },
       () => {
         chrome.runtime.sendMessage({
           type: "featureOperation",
           payload: {
-            adBlockingEnabled: adBlockingCheckbox.checked,
-            feature: "abd",
+            disturbanceEnabled: smoothStreamCheckbox.checked,
+            feature: "disturbance", // maps to auto-close functionality
           },
         });
       }
@@ -30,12 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   phishingCheckbox.addEventListener("change", () => {
     chrome.storage.local.set(
-      { phishingWarningEnabled: phishingCheckbox.checked },
+      { phishingEnabled: phishingCheckbox.checked },
       () => {
         chrome.runtime.sendMessage({
           type: "featureOperation",
           payload: {
-            phishingWarningEnabled: phishingCheckbox.checked,
+            phishingEnabled: phishingCheckbox.checked,
             feature: "phishing",
           },
         });
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.runtime.openOptionsPage();
   });
 
-  // Update the site name to the current tab's domain
+  // Update the site name to the current tab's domain.
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs.length && tabs[0].url) {
       try {

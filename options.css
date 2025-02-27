@@ -15,7 +15,6 @@
 :root {
   /* New Palette Variables */
   --tufts-blue: #378ad8ff;
-  /* For a more unified palette, I’m using tufts-blue as cool-gray as well */
   --cool-gray: #378ad8ff;
   --jet: #37363cff;
   --jet-2: #3f3d43ff;
@@ -35,27 +34,16 @@
   --color-header-text: var(--text-color);
   --color-header-icon: var(--text-color);
 
-  /* Notifications */
-  --color-notification-bg: var(--tufts-blue);
-  --color-notification-text: var(--jet);
-
-  /* Toggles */
+  /* Toggles / Checkboxes */
   --color-toggle-bg: var(--cool-gray);
-  --color-toggle-circle: var(--text-color);
-  --color-toggle-checked-bg: var(--tufts-blue);
 
   /* Icons, Buttons & Interactive States */
   --color-active-icon: var(--tufts-blue);
-  --color-active-carousel-button: var(--tufts-blue);
-  --color-active-carousel-text: var(--text-color);
   --color-active-button-bg: var(--tufts-blue);
   --color-active-button-hover: var(--save-hover);
 
   --color-button-bg: var(--tufts-blue);
   --color-button-hover: var(--tufts-blue);
-
-  /* Sections */
-  --color-guide-section-bg: var(--jet-2);
 
   /* Tooltips */
   --color-tooltip-bg: var(--cool-gray);
@@ -66,8 +54,6 @@
   /* Dialog (Modal) - (not used now but kept for Reset) */
   --color-dialogbox-bg: var(--cool-gray-2);
   --color-dialogbox-text: var(--jet);
-  --color-button-cancel-bg: var(--cancel-red);
-  --color-button-cancel-hover-bg: var(--cancel-red-hover);
 }
 
 /* ========================================
@@ -254,7 +240,7 @@ body {
 }
 
 /* ========================================
-   Buttons (Toolbar) and General Reset Section
+   Buttons (Toolbar) and General Restore Section
 ======================================== */
 .btn-add-sites {
   background-color: var(--color-button-bg);

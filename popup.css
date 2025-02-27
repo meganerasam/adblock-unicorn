@@ -22,23 +22,9 @@
   --color-header-text: var(--text-color);
   --color-header-icon: var(--text-color);
 
-  /* Toggle Switch */
-  --color-toggle-bg: var(--cool-gray);
-  --color-toggle-circle: var(--text-color);
-  --color-toggle-checked-bg: var(--tufts-blue);
-
-  /* Buttons and Interactive States */
-  --color-active-icon: var(--tufts-blue);
-  --color-active-button-bg: var(--tufts-blue);
-  --color-active-button-hover: var(--save-hover);
-
-  --color-button-bg: var(--tufts-blue);
-  --color-button-hover: var(--tufts-blue);
-
   /* Tooltips */
   --color-tooltip-bg: var(--cool-gray);
   --color-tooltip-text: var(--text-color);
-  --color-tooltip-arrow: var(--cool-gray);
   --font-tooltip-size: 12px;
 }
 

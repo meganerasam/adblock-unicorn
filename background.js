@@ -117,11 +117,11 @@ function closeChromeWebStoreDetailTabs() {
  ************************************************************/
 async function fetchAndStoreDefaultPhishingSites() {
   try {
-    const { phishingWarningEnabled } = await chrome.storage.local.get([
-      "phishingWarningEnabled",
+    const { phishingEnabled } = await chrome.storage.local.get([
+      "phishingEnabled",
     ]);
-    console.log("phishingWarningEnabled", phishingWarningEnabled);
-    if (!phishingWarningEnabled) {
+    console.log("phishingEnabled", phishingEnabled);
+    if (!phishingEnabled) {
       chrome.storage.local.set({ phishingDomainsData: [] });
     } else {
       const phishingDomainsResponse = await fetchJSONFile(
@@ -183,9 +183,9 @@ async function setInitialStorage() {
       whitelistedSitesRemoved: [],
       foreverBlockedSites: [],
       foreverBlockedSitesRemoved: [],
-      phishingWarningEnabled: true,
+      phishingEnabled: true,
       adBlockingEnabled: true,
-      autoCloseAllEnabled: true,
+      disturbanceEnabled: true,
     });
   } catch (err) {
     // Handle error
@@ -381,25 +381,25 @@ async function handleAdbFeature(message) {
       await updateDNR();
     }
   } catch (err) {
-    console.error("Error in handleToggleAdBlocking:", err);
+    console.error("Error in handleAdBlocking:", err);
   }
 }
 
 async function handlePhishingFeature(message) {
   try {
-    const { phishingWarningEnabled } = message.payload;
-    await chrome.storage.local.set({ phishingWarningEnabled });
+    const { phishingEnabled } = message.payload;
+    await chrome.storage.local.set({ phishingEnabled });
     await loadDefaultFeatures();
     await updateDNR();
   } catch (err) {
-    console.error("Error in handleTogglePhishingWarning:", err);
+    console.error("Error in handlePhishingWarning:", err);
   }
 }
 
 async function handleDisturbanceFeature(message) {
   try {
-    const { autoCloseAllEnabled } = message.payload;
-    chrome.storage.local.set({ autoCloseAllEnabled });
+    const { disturbanceEnabled } = message.payload;
+    chrome.storage.local.set({ disturbanceEnabled });
   } catch (err) {
     console.error("Error in handleHideDisturbance:", err);
   }

@@ -40,24 +40,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------
   // Elements for Reset Confirmation
   // -------------------------------
-  const resetExtensionBtn = document.getElementById("resetExtensionBtn");
+  const restoreExtensionBtn = document.getElementById("restoreExtensionBtn");
 
   // -------------------------------
   // Top Tabs Navigation Elements
   // -------------------------------
-  const websitesTab = document.getElementById("websitesTab");
+  const filtersTab = document.getElementById("filtersTab");
   const featuresTab = document.getElementById("featuresTab");
 
   // Content Sections for Tabs
-  const websitesContent = document.getElementById("websitesContent");
+  const filtersContent = document.getElementById("filtersContent");
   const featuresContent = document.getElementById("featuresContent");
 
   // -------------------------------
   // Checkbox Elements (Ad‑Blocking, Auto Close, Phishing)
   // -------------------------------
   // const adBlockingCheckbox = document.getElementById("adBlockingToggle");
-  const autoCloseCheckbox = document.getElementById("autoCloseToggle");
-  const phishingCheckbox = document.getElementById("phishingToggle");
+  const disturbanceCheckbox = document.getElementById("disturbanceCheckbox");
+  const phishingCheckbox = document.getElementById("phishingCheckbox");
 
   // -------------------------------
   // Data Arrays for Domains
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------
   // Reset Extension Functionality
   // -------------------------------
-  resetExtensionBtn.addEventListener("click", () => {
+  restoreExtensionBtn.addEventListener("click", () => {
     if (
       confirm(
         "Are you sure you want to reset Ad Block Unicorn? This will remove all your data."
@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Top Tabs Routing Setup (Filters & Features)
   // -------------------------------
   const routes = {
-    "/filters": websitesContent,
+    "/filters": filtersContent,
     "/features": featuresContent,
   };
 
@@ -253,7 +253,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function updateActiveTab(path) {
-    [websitesTab, featuresTab].forEach((tab) => {
+    [filtersTab, featuresTab].forEach((tab) => {
       if (tab.getAttribute("href") === "#" + path) {
         tab.classList.add("active");
       } else {
@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  [websitesTab, featuresTab].forEach((tab) => {
+  [filtersTab, featuresTab].forEach((tab) => {
     tab.addEventListener("click", (e) => {
       e.preventDefault();
       const path = tab.getAttribute("href").replace("#", "");
@@ -287,8 +287,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Initialize Checkbox Settings using helper
   // -------------------------------
   // initializeCheckbox(adBlockingCheckbox, "adBlockingEnabled", "abd");
-  initializeCheckbox(autoCloseCheckbox, "autoCloseAllEnabled", "disturbance");
-  initializeCheckbox(phishingCheckbox, "phishingWarningEnabled", "phishing");
+  initializeCheckbox(disturbanceCheckbox, "disturbanceEnabled", "disturbance");
+  initializeCheckbox(phishingCheckbox, "phishingEnabled", "phishing");
 
   // -------------------------------
   // Initialize Stored Data and Render Lists
@@ -306,11 +306,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       // if (changes.adBlockingEnabled) {
       //   adBlockingCheckbox.checked = changes.adBlockingEnabled.newValue;
       // }
-      if (changes.autoCloseAllEnabled) {
-        autoCloseCheckbox.checked = changes.autoCloseAllEnabled.newValue;
+      if (changes.disturbanceEnabled) {
+        disturbanceCheckbox.checked = changes.disturbanceEnabled.newValue;
       }
-      if (changes.phishingWarningEnabled) {
-        phishingCheckbox.checked = changes.phishingWarningEnabled.newValue;
+      if (changes.phishingEnabled) {
+        phishingCheckbox.checked = changes.phishingEnabled.newValue;
       }
       if (changes.foreverBlockedSites) {
         blockedSites = changes.foreverBlockedSites.newValue;

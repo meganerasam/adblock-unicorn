@@ -62,11 +62,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("[blocked.js] Invalid original URL:", originalURL);
   }
 
-  // Fetch status of autoCloseAllEnabled
-  let autoCloseAllEnabled = await chrome.storage.local.get(
-    "autoCloseAllEnabled"
-  );
-  if (autoCloseAllEnabled && autoCloseAllEnabled.autoCloseAllEnabled) {
+  // Fetch status of disturbanceEnabled
+  let disturbanceEnabled = await chrome.storage.local.get("disturbanceEnabled");
+  if (disturbanceEnabled && disturbanceEnabled.disturbanceEnabled) {
     window.close();
     return;
   }
@@ -137,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         chrome.runtime.sendMessage(
           {
             type: "featureOperation",
-            payload: { autoCloseAllEnabled: true, feature: "disturbance" },
+            payload: { disturbanceEnabled: true, feature: "disturbance" },
           },
           (response) => {
             if (chrome.runtime.lastError || !response?.success) {
@@ -164,7 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       chrome.runtime.sendMessage(
         {
           type: "featureOperation",
-          payload: { autoCloseAllEnabled: true, feature: "disturbance" },
+          payload: { disturbanceEnabled: true, feature: "disturbance" },
         },
         (response) => {
           if (chrome.runtime.lastError || !response?.success) {

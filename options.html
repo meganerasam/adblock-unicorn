@@ -19,7 +19,7 @@
       <div class="top-tabs">
         <ul>
           <li>
-            <a href="#/filters" id="websitesTab" class="active">Filters</a>
+            <a href="#/filters" id="filtersTab" class="active">Filters</a>
           </li>
           <li><a href="#/features" id="featuresTab">Features</a></li>
         </ul>
@@ -27,7 +27,7 @@
       <!-- Content Area -->
       <div class="content">
         <!-- Filters Tab Content -->
-        <div id="websitesContent" class="tab-content" style="display: block">
+        <div id="filtersContent" class="tab-content" style="display: block">
           <div class="filters-columns">
             <div class="filters-menu">
               <div class="title-row">
@@ -111,8 +111,8 @@
           <div class="option">
             <div class="option-row">
               <div class="option-control">
-                <input type="checkbox" id="autoCloseToggle" checked />
-                <label for="autoCloseToggle"></label>
+                <input type="checkbox" id="disturbanceCheckbox" checked />
+                <label for="disturbanceCheckbox"></label>
               </div>
               <div class="option-text">
                 <h2>Smooth Stream and Download</h2>
@@ -127,8 +127,8 @@
           <div class="option">
             <div class="option-row">
               <div class="option-control">
-                <input type="checkbox" id="phishingToggle" checked />
-                <label for="phishingToggle"></label>
+                <input type="checkbox" id="phishingCheckbox" checked />
+                <label for="phishingCheckbox"></label>
               </div>
               <div class="option-text">
                 <h2>Phishing Shield</h2>
@@ -152,7 +152,7 @@
                   extension to its original state.
                 </p>
                 <div class="toggle-switch">
-                  <button id="resetExtensionBtn" class="btn-reset-extension">
+                  <button id="restoreExtensionBtn" class="btn-reset-extension">
                     <i class="fas fa-undo"></i> Restore
                   </button>
                 </div>
