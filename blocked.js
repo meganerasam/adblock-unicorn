@@ -58,9 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const urlObj = new URL(originalURL);
     const rawDomain = urlObj.hostname;
     domain = normalizeDomainInput(rawDomain);
-  } catch (error) {
-    console.error("[blocked.js] Invalid original URL:", originalURL);
-  }
+  } catch (error) {}
 
   // Fetch status of disturbanceEnabled
   let disturbanceEnabled = await chrome.storage.local.get("disturbanceEnabled");
@@ -70,9 +68,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   // Check if the domain is already permanently blocked
   else if (domain) {
-    await chrome.storage.local.get("foreverBlockedSites", (result) => {
-      const foreverBlockedSites = result.foreverBlockedSites || [];
-      if (foreverBlockedSites.includes(domain)) {
+    await chrome.storage.local.get("userBlockedDom", (result) => {
+      const userBlockedDom = result.userBlockedDom || [];
+      if (userBlockedDom.includes(domain)) {
         window.close();
         return;
       }

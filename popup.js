@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const openOptionsBtn = document.getElementById("openOptionsBtn");
   const siteNameEl = document.querySelector(".site-name");
 
-  // Load settings for checkboxes using the appropriate storage keys.
+  // Load settings
   chrome.storage.local.get(
     ["disturbanceEnabled", "phishingEnabled"],
     (result) => {
@@ -13,6 +13,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
+  // Retrieve and display metrics.
+  chrome.storage.local.get(
+    ["urlTotalBlocked", "lifetimeTotalBlocked", "dailyTotalBlocked"],
+    (result) => {
+      // Get current tab's domain.
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        let currentDomain = "";
+        if (tabs.length && tabs[0].url) {
+          try {
+            const urlObj = new URL(tabs[0].url);
+            currentDomain = urlObj.hostname.replace(/^www\./, "");
+          } catch (err) {
+            console.error("Error parsing URL:", err);
+          }
+        }
+        const urlTotalBlocked = result.urlTotalBlocked || {};
+        const lifetimeTotal = result.lifetimeTotalBlocked || 0;
+        const dailyTotalObj = result.dailyTotalBlocked || { count: 0 };
+        const dailyTotal = dailyTotalObj.count || 0;
+        const siteBlocked = urlTotalBlocked[currentDomain] || 0;
+
+        document.getElementById("siteBlockedMetric").textContent = siteBlocked;
+        document.getElementById("dailyBlockedMetric").textContent = dailyTotal;
+        document.getElementById("lifetimeBlockedMetric").textContent =
+          lifetimeTotal;
+      });
+    }
+  );
+
+  // Checkbox change listeners
   smoothStreamCheckbox.addEventListener("change", () => {
     chrome.storage.local.set(
       { disturbanceEnabled: smoothStreamCheckbox.checked },
@@ -21,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
           type: "featureOperation",
           payload: {
             disturbanceEnabled: smoothStreamCheckbox.checked,
-            feature: "disturbance", // maps to auto-close functionality
+            feature: "disturbance",
           },
         });
       }
@@ -56,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
         siteNameEl.textContent = domain;
       } catch (err) {
         console.error("Error parsing URL:", err);
-        siteNameEl.textContent = "Unknown Site";
+        siteNameEl.textContent = "-";
       }
     }
   });

@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------
   // Data Arrays for Domains
   // -------------------------------
-  let whitelistedSites = [];
+  let userWhitelistedDom = [];
   let blockedSites = [];
 
   // -------------------------------
@@ -95,12 +95,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       whitelistErrorMsg.textContent = "Please enter a valid domain name.";
       return;
     }
-    if (whitelistedSites.includes(domain)) {
+    if (userWhitelistedDom.includes(domain)) {
       whitelistErrorMsg.textContent = "This domain is already whitelisted.";
       return;
     }
-    whitelistedSites.push(domain);
-    await chrome.storage.local.set({ whitelistedSites });
+    userWhitelistedDom.push(domain);
+    await chrome.storage.local.set({ userWhitelistedDom });
     renderWhitelistedList();
     toggleAddForm(
       whitelistAddForm,
@@ -122,12 +122,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   function renderWhitelistedList() {
     renderDomainList(
       whitelistedList,
-      whitelistedSites,
+      userWhitelistedDom,
       "No domain whitelisted"
     );
     attachRemoveListeners(whitelistedList, async (domain) => {
-      whitelistedSites = whitelistedSites.filter((d) => d !== domain);
-      await chrome.storage.local.set({ whitelistedSites });
+      userWhitelistedDom = userWhitelistedDom.filter((d) => d !== domain);
+      await chrome.storage.local.set({ userWhitelistedDom });
       renderWhitelistedList();
       chrome.runtime.sendMessage({
         type: "whitelistOperation",
@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
     blockedSites.push(domain);
-    await chrome.storage.local.set({ foreverBlockedSites: blockedSites });
+    await chrome.storage.local.set({ userBlockedDom: blockedSites });
     renderBlockedList();
     toggleAddForm(blockedAddForm, blockedDomainInput, blockedErrorMsg, false);
     chrome.runtime.sendMessage({
@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderDomainList(blockedList, blockedSites, "No blocked domain");
     attachRemoveListeners(blockedList, async (domain) => {
       blockedSites = blockedSites.filter((d) => d !== domain);
-      await chrome.storage.local.set({ foreverBlockedSites: blockedSites });
+      await chrome.storage.local.set({ userBlockedDom: blockedSites });
       renderBlockedList();
       chrome.runtime.sendMessage({
         type: "blockOperation",
@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   restoreExtensionBtn.addEventListener("click", () => {
     if (
       confirm(
-        "Are you sure you want to reset Ad Block Unicorn? This will remove all your data."
+        "Are you sure you want to restore Ad Block Unicorn to defaults setting? This will reset all your data."
       )
     ) {
       chrome.runtime.sendMessage(
@@ -286,34 +286,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------
   // Initialize Checkbox Settings using helper
   // -------------------------------
-  // initializeCheckbox(adBlockingCheckbox, "adBlockingEnabled", "abd");
   initializeCheckbox(disturbanceCheckbox, "disturbanceEnabled", "disturbance");
   initializeCheckbox(phishingCheckbox, "phishingEnabled", "phishing");
 
   // -------------------------------
   // Initialize Stored Data and Render Lists
   // -------------------------------
-  const storedWhitelist = await chrome.storage.local.get("whitelistedSites");
-  whitelistedSites = storedWhitelist.whitelistedSites || [];
+  const storedWhitelist = await chrome.storage.local.get("userWhitelistedDom");
+  userWhitelistedDom = storedWhitelist.userWhitelistedDom || [];
   renderWhitelistedList();
 
-  const storedBlocked = await chrome.storage.local.get("foreverBlockedSites");
-  blockedSites = storedBlocked.foreverBlockedSites || [];
+  const storedBlocked = await chrome.storage.local.get("userBlockedDom");
+  blockedSites = storedBlocked.userBlockedDom || [];
   renderBlockedList();
 
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "local") {
-      // if (changes.adBlockingEnabled) {
-      //   adBlockingCheckbox.checked = changes.adBlockingEnabled.newValue;
-      // }
       if (changes.disturbanceEnabled) {
         disturbanceCheckbox.checked = changes.disturbanceEnabled.newValue;
       }
       if (changes.phishingEnabled) {
         phishingCheckbox.checked = changes.phishingEnabled.newValue;
       }
-      if (changes.foreverBlockedSites) {
-        blockedSites = changes.foreverBlockedSites.newValue;
+      if (changes.userBlockedDom) {
+        blockedSites = changes.userBlockedDom.newValue;
         renderBlockedList();
       }
     }

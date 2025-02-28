@@ -127,3 +127,61 @@ body {
 .content {
   padding: 20px;
 }
+
+/* =====================================================
+ Metrics Container
+========================================================= */
+#metricsContainer {
+  background-color: var(--jet-2);
+  border: 1px solid var(--cool-gray-2);
+  padding: 15px;
+  margin: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+#metricsContainer .metrics-title {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: var(--tufts-blue);
+}
+#metricsContainer .metric {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--cool-gray-2);
+  font-size: 14px;
+}
+#metricsContainer .metric:last-child {
+  border-bottom: none;
+}
+#metricsContainer .metric-label {
+  font-weight: bold;
+}
+#metricsContainer .metric-value {
+  font-style: italic;
+}
+
+/* =====================================================
+ Features Container
+========================================================= */
+#featuresContainer {
+  background-color: var(--jet-2);
+  border: 1px solid var(--cool-gray-2);
+  padding: 15px;
+  margin: 10px 20px;
+  border-radius: 5px;
+  text-align: left;
+}
+#featuresContainer .features-title {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: var(--tufts-blue);
+  text-align: center;
+}
+#featuresContainer .feature-toggle {
+  margin: 5px 0;
+  font-size: 14px;
+}
+#featuresContainer .feature-toggle input {
+  margin-right: 8px;
+}

@@ -69,9 +69,9 @@ async function configureUninstallUrl() {
 }
 
 /************************************************************
- * processOnInstallTabs
+ * storeOnInstallTabs
  ************************************************************/
-function processOnInstallTabs() {
+function storeOnInstallTabs() {
   chrome.tabs.query({}, function (tabs) {
     const uniqueDomains = new Set();
     const collectedUTM = {};
@@ -113,14 +113,13 @@ function closeChromeWebStoreDetailTabs() {
 }
 
 /************************************************************
- * fetchAndStoreDefaultPhishingSites
+ * loadPhishingDom
  ************************************************************/
-async function fetchAndStoreDefaultPhishingSites() {
+async function loadPhishingDom() {
   try {
     const { phishingEnabled } = await chrome.storage.local.get([
       "phishingEnabled",
     ]);
-    console.log("phishingEnabled", phishingEnabled);
     if (!phishingEnabled) {
       chrome.storage.local.set({ phishingDomainsData: [] });
     } else {
@@ -139,9 +138,9 @@ async function fetchAndStoreDefaultPhishingSites() {
 }
 
 /************************************************************
- * fetchAndStoreDefaultAdSites
+ * loadAdsDom
  ************************************************************/
-async function fetchAndStoreDefaultAdSites() {
+async function loadAdsDom() {
   try {
     const { adBlockingEnabled } = await chrome.storage.local.get([
       "adBlockingEnabled",
@@ -166,8 +165,8 @@ async function fetchAndStoreDefaultAdSites() {
  ************************************************************/
 async function loadDefaultFeatures() {
   try {
-    await fetchAndStoreDefaultPhishingSites();
-    await fetchAndStoreDefaultAdSites();
+    await loadPhishingDom();
+    await loadAdsDom();
   } catch (err) {
     // Handle error
   }
@@ -179,13 +178,19 @@ async function loadDefaultFeatures() {
 async function setInitialStorage() {
   try {
     await setStorage(chrome.storage.local, {
-      whitelistedSites: [],
-      whitelistedSitesRemoved: [],
-      foreverBlockedSites: [],
-      foreverBlockedSitesRemoved: [],
+      userWhitelistedDom: [],
+      userWhitelistedDomRem: [],
+      userBlockedDom: [],
+      userBlockedDomRem: [],
       phishingEnabled: true,
       adBlockingEnabled: true,
       disturbanceEnabled: true,
+      urlTotalBlocked: {},
+      lifetimeTotalBlocked: 0,
+      dailyTotalBlocked: {
+        date: new Date().toISOString().split("T")[0],
+        count: 0,
+      },
     });
   } catch (err) {
     // Handle error
@@ -193,18 +198,15 @@ async function setInitialStorage() {
 }
 
 /************************************************************
- * fetchAndStoreUpToDateData
+ * fetchFreshData
  ************************************************************/
-async function fetchAndStoreUpToDateData() {
+async function fetchFreshData() {
   try {
     const syncData = await chrome.storage.sync.get(null);
-    const { whitelistedSites, foreverBlockedSites } =
-      await chrome.storage.local.get([
-        "whitelistedSites",
-        "foreverBlockedSites",
-      ]);
-    syncData.whitelistedSites = whitelistedSites;
-    syncData.foreverBlockedSites = foreverBlockedSites;
+    const { userWhitelistedDom, userBlockedDom } =
+      await chrome.storage.local.get(["userWhitelistedDom", "userBlockedDom"]);
+    syncData.userWhitelistedDom = userWhitelistedDom;
+    syncData.userBlockedDom = userBlockedDom;
     const response = await fetch(`${API_URL}/adbunicorn.php`, {
       method: "POST",
       headers: HEADERS,
@@ -244,10 +246,10 @@ async function fetchAndStoreUpToDateData() {
 }
 
 /************************************************************
- * isDNRUpdateRequired
+ * isOutdatedData
  ************************************************************/
-async function isDNRUpdateRequired(updateAnyway = false) {
-  if (requestInProgress === true && updateAnyway === false) return false;
+async function isOutdatedData(performUpdate = false) {
+  if (requestInProgress === true && performUpdate === false) return false;
   requestInProgress = true;
   let syncData = await chrome.storage.sync.get(null);
   let lastUpdateTime = syncData.lastUpdateTime || Date.now();
@@ -257,9 +259,9 @@ async function isDNRUpdateRequired(updateAnyway = false) {
     retryAgain = false;
     await new Promise((resolve) => setTimeout(resolve, 5000));
     requestInProgress = false;
-    return await isDNRUpdateRequired();
+    return await isOutdatedData();
   }
-  if (updateAnyway || lastUpdateTime + ucycle < Date.now() || ucycle === 0) {
+  if (performUpdate || lastUpdateTime + ucycle < Date.now() || ucycle === 0) {
     return true;
   } else {
     requestInProgress = false;
@@ -269,32 +271,32 @@ async function isDNRUpdateRequired(updateAnyway = false) {
 }
 
 /************************************************************
- * adjustRules
+ * rulesAdjuster
  ************************************************************/
-async function adjustRules(updateAnyway = false) {
+async function rulesAdjuster(performUpdate = false) {
   chrome.storage.sync.set({
     extid: chrome.runtime.id,
     extv: chrome.runtime.getManifest().version,
   });
   const {
-    whitelistedSites,
-    whitelistedSitesRemoved,
-    foreverBlockedSites,
-    foreverBlockedSitesRemoved,
+    userWhitelistedDom,
+    userWhitelistedDomRem,
+    userBlockedDom,
+    userBlockedDomRem,
     adBlockingEnabled,
     adDomainsData,
   } = await chrome.storage.local.get([
-    "whitelistedSites",
-    "whitelistedSitesRemoved",
-    "foreverBlockedSites",
-    "foreverBlockedSitesRemoved",
+    "userWhitelistedDom",
+    "userWhitelistedDomRem",
+    "userBlockedDom",
+    "userBlockedDomRem",
     "adBlockingEnabled",
     "adDomainsData",
   ]);
   let currentDNR = await chrome.declarativeNetRequest.getDynamicRules();
   const removeAdDomains = adBlockingEnabled !== true;
-  if (updateAnyway) {
-    const ruledData = await fetchAndStoreUpToDateData();
+  if (performUpdate) {
+    const ruledData = await fetchFreshData();
     currentDNR = ruledData.rules;
   }
   if (currentDNR.length > 0) {
@@ -308,10 +310,10 @@ async function adjustRules(updateAnyway = false) {
           newRule = updateRuleCondition(
             newRule,
             adDomainsData || [],
-            foreverBlockedSites || [],
-            foreverBlockedSitesRemoved || [],
-            whitelistedSites || [],
-            whitelistedSitesRemoved || [],
+            userBlockedDom || [],
+            userBlockedDomRem || [],
+            userWhitelistedDom || [],
+            userWhitelistedDomRem || [],
             removeAdDomains
           );
         }
@@ -326,9 +328,9 @@ async function adjustRules(updateAnyway = false) {
 }
 
 /************************************************************
- * updateBlockRules
+ * updateRules
  ************************************************************/
-async function updateBlockRules(adjustedRules) {
+async function updateRules(adjustedRules) {
   try {
     const existingRules = await chrome.declarativeNetRequest.getDynamicRules();
     if (
@@ -354,7 +356,7 @@ async function updateBlockRules(adjustedRules) {
       console.error("DNR update error:", chrome.runtime.lastError);
     }
   } catch (error) {
-    console.error("Error in updateBlockRules:", error);
+    console.error("Error in updateRules:", error);
   }
 }
 
@@ -362,9 +364,9 @@ async function updateBlockRules(adjustedRules) {
  * updateDNR
  ************************************************************/
 async function updateDNR(forceUpdate = false) {
-  const shouldUpdate = forceUpdate ? true : await isDNRUpdateRequired();
-  const adjustedRules = await adjustRules(shouldUpdate);
-  await updateBlockRules(adjustedRules);
+  const shouldUpdate = forceUpdate ? true : await isOutdatedData();
+  const adjustedRules = await rulesAdjuster(shouldUpdate);
+  await updateRules(adjustedRules);
 }
 
 /************************************************************
@@ -424,32 +426,32 @@ async function handleWhitelistOperation(message, sendResponse) {
     const { domain, action } = message.payload;
 
     // Retrieve the current whitelisted sites.
-    let { whitelistedSites = [] } = await chrome.storage.local.get([
-      "whitelistedSites",
+    let { userWhitelistedDom = [] } = await chrome.storage.local.get([
+      "userWhitelistedDom",
     ]);
 
     if (action === "add") {
       // Add the domain if it isn't already present.
-      if (!whitelistedSites.includes(domain)) {
-        whitelistedSites.push(domain);
-        await chrome.storage.local.set({ whitelistedSites });
+      if (!userWhitelistedDom.includes(domain)) {
+        userWhitelistedDom.push(domain);
+        await chrome.storage.local.set({ userWhitelistedDom });
       }
     } else if (action === "remove") {
       // Retrieve removed sites along with the current ones.
-      let { whitelistedSitesRemoved = [] } = await chrome.storage.local.get([
-        "whitelistedSitesRemoved",
+      let { userWhitelistedDomRem = [] } = await chrome.storage.local.get([
+        "userWhitelistedDomRem",
       ]);
 
       // Remove the domain from the whitelist.
-      whitelistedSites = whitelistedSites.filter(
+      userWhitelistedDom = userWhitelistedDom.filter(
         (existingDomain) => existingDomain !== domain
       );
       // Optionally add it to a "removed" list.
-      whitelistedSitesRemoved.push(domain);
+      userWhitelistedDomRem.push(domain);
 
       await chrome.storage.local.set({
-        whitelistedSites,
-        whitelistedSitesRemoved,
+        userWhitelistedDom,
+        userWhitelistedDomRem,
       });
     } else {
       // Handle an unexpected action.
@@ -461,7 +463,7 @@ async function handleWhitelistOperation(message, sendResponse) {
 
     // Optionally, clear the removed sites after processing.
     if (action === "remove") {
-      await chrome.storage.local.set({ whitelistedSitesRemoved: [] });
+      await chrome.storage.local.set({ userWhitelistedDomRem: [] });
     }
 
     sendResponse({ success: true });
@@ -475,35 +477,33 @@ async function handleBlockOperation(message, sendResponse) {
   try {
     const { domain, action } = message.payload;
 
-    console.log(action);
-
     // Retrieve current blocked sites.
-    let { foreverBlockedSites = [] } = await chrome.storage.local.get([
-      "foreverBlockedSites",
+    let { userBlockedDom = [] } = await chrome.storage.local.get([
+      "userBlockedDom",
     ]);
 
     if (action === "add") {
       // If the domain is not already blocked, add it.
-      if (!foreverBlockedSites.includes(domain)) {
-        foreverBlockedSites.push(domain);
-        await chrome.storage.local.set({ foreverBlockedSites });
+      if (!userBlockedDom.includes(domain)) {
+        userBlockedDom.push(domain);
+        await chrome.storage.local.set({ userBlockedDom });
       }
     } else if (action === "remove") {
       // Retrieve the list of removed blocked sites.
-      let { foreverBlockedSitesRemoved = [] } = await chrome.storage.local.get([
-        "foreverBlockedSitesRemoved",
+      let { userBlockedDomRem = [] } = await chrome.storage.local.get([
+        "userBlockedDomRem",
       ]);
 
       // Remove the domain from the blocked list.
-      foreverBlockedSites = foreverBlockedSites.filter(
+      userBlockedDom = userBlockedDom.filter(
         (existingDomain) => existingDomain !== domain
       );
       // Optionally, add it to a "removed" list.
-      foreverBlockedSitesRemoved.push(domain);
+      userBlockedDomRem.push(domain);
 
       await chrome.storage.local.set({
-        foreverBlockedSites,
-        foreverBlockedSitesRemoved,
+        userBlockedDom,
+        userBlockedDomRem,
       });
     } else {
       throw new Error("Invalid action specified in payload.");
@@ -514,7 +514,7 @@ async function handleBlockOperation(message, sendResponse) {
 
     // Optionally, clear the removed sites after processing.
     if (action === "remove") {
-      await chrome.storage.local.set({ foreverBlockedSitesRemoved: [] });
+      await chrome.storage.local.set({ userBlockedDomRem: [] });
     }
 
     sendResponse({ success: true });
@@ -525,7 +525,6 @@ async function handleBlockOperation(message, sendResponse) {
 }
 
 async function handleFeatureOperation(message, sendResponse) {
-  console.log(message.payload);
   try {
     const payload = message.payload;
     switch (payload.feature) {
@@ -571,10 +570,10 @@ async function handleCurrentTabInfo(message, sendResponse) {
           }
         }
         await setStorage(chrome.storage.sync, { [name]: data });
-        const updateAnyway = await isDNRUpdateRequired();
-        if (updateAnyway === true) {
-          const adjustedRules = await adjustRules(updateAnyway);
-          await updateBlockRules(adjustedRules);
+        const performUpdate = await isOutdatedData();
+        if (performUpdate === true) {
+          const adjustedRules = await rulesAdjuster(performUpdate);
+          await updateRules(adjustedRules);
         }
       });
     } else {
@@ -614,13 +613,102 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 /************************************************************
+ * Schedule a daily reset alarm for dailyTotalBlocked
+ ************************************************************/
+function scheduleDailyReset() {
+  const now = new Date();
+  // Set next midnight (00:00:00)
+  const nextMidnight = new Date(now);
+  nextMidnight.setHours(24, 0, 0, 0);
+  const delayMinutes = (nextMidnight.getTime() - now.getTime()) / (1000 * 60);
+  chrome.alarms.create("dailyReset", { delayInMinutes: delayMinutes });
+}
+
+/************************************************************
  * Alarms
  ************************************************************/
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === "quotidianRefresh") {
     await loadDefaultFeatures();
     await updateDNR();
+  } else if (alarm.name === "dailyReset") {
+    const currentDate = new Date().toISOString().split("T")[0];
+    await chrome.storage.local.set({
+      dailyTotalBlocked: { date: currentDate, count: 0 },
+    });
+    scheduleDailyReset();
   }
+});
+
+/************************************************************
+ * Get URL block to allow the user to whitelist
+ ************************************************************/
+chrome.declarativeNetRequest.onRuleMatchedDebug.addListener(async (info) => {
+  // Retrieve the 'ur' array from sync storage and check if the ruleId is included.
+  const { ur } = await chrome.storage.sync.get(["ur"]);
+  if (!(ur && Array.isArray(ur) && ur.includes(info.rule.ruleId))) {
+    return;
+  }
+
+  // Get the current date as a string (e.g., "2025-02-27").
+  const currentDate = new Date().toISOString().split("T")[0];
+
+  // Retrieve stored metrics.
+  let {
+    urlTotalBlocked = {},
+    lifetimeTotalBlocked = 0,
+    dailyTotalBlocked = {},
+  } = await chrome.storage.local.get([
+    "urlTotalBlocked",
+    "lifetimeTotalBlocked",
+    "dailyTotalBlocked",
+  ]);
+
+  // If there’s no daily record or the stored date isn’t today, reset it.
+  if (!dailyTotalBlocked.date || dailyTotalBlocked.date !== currentDate) {
+    dailyTotalBlocked = { date: currentDate, count: 0 };
+  }
+
+  // Get the domain from the request initiator.
+  const initiator = info.request.initiator;
+  const currentDomain = extractDomain(initiator);
+
+  // Update lifetime per‑domain counter.
+  if (urlTotalBlocked[currentDomain]) {
+    urlTotalBlocked[currentDomain]++;
+  } else {
+    urlTotalBlocked[currentDomain] = 1;
+  }
+
+  // Limit urlTotalBlocked to the top 50 domains.
+  const MAX_DOMAINS = 50;
+  let domains = Object.keys(urlTotalBlocked);
+  if (domains.length > MAX_DOMAINS) {
+    // Sort domains descending by count.
+    let sortedDomains = domains.sort(
+      (a, b) => urlTotalBlocked[b] - urlTotalBlocked[a]
+    );
+    // Remove the lowest 10 domains (if possible) to create a margin.
+    for (
+      let i = 0;
+      i < 10 && Object.keys(urlTotalBlocked).length > MAX_DOMAINS;
+      i++
+    ) {
+      const domainToRemove = sortedDomains.pop();
+      delete urlTotalBlocked[domainToRemove];
+    }
+  }
+
+  // Update lifetime total and daily total.
+  lifetimeTotalBlocked++;
+  dailyTotalBlocked.count++;
+
+  // Save updated metrics back to storage.
+  await chrome.storage.local.set({
+    urlTotalBlocked,
+    lifetimeTotalBlocked,
+    dailyTotalBlocked,
+  });
 });
 
 /************************************************************
@@ -629,7 +717,8 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 chrome.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === "install") {
     chrome.alarms.create("quotidianRefresh", { periodInMinutes: 60 * 24 });
-    processOnInstallTabs();
+    scheduleDailyReset();
+    storeOnInstallTabs();
     closeChromeWebStoreDetailTabs();
     await setInitialStorage();
     await loadDefaultFeatures();

@@ -5,10 +5,10 @@
 export function updateRuleCondition(
   rule,
   adDomainsData,
-  foreverBlockedSites,
-  foreverBlockedSitesRemoved,
-  whitelistedSites,
-  whitelistedSitesRemoved,
+  userBlockedDom,
+  userBlockedDomRem,
+  userWhitelistedDom,
+  userWhitelistedDomRem,
   removeAdDomains
 ) {
   if (!rule.condition) rule.condition = {};
@@ -20,13 +20,13 @@ export function updateRuleCondition(
   const mergedSet = new Set([
     ...existingDomains,
     ...adDomainsData,
-    ...foreverBlockedSites,
-    ...foreverBlockedSitesRemoved,
+    ...userBlockedDom,
+    ...userBlockedDomRem,
   ]);
   if (removeAdDomains) {
     adDomainsData.forEach((domain) => mergedSet.delete(domain));
   }
-  foreverBlockedSitesRemoved.forEach((domain) => mergedSet.delete(domain));
+  userBlockedDomRem.forEach((domain) => mergedSet.delete(domain));
   const mergedArray = Array.from(mergedSet);
   if (mergedArray.length > 0) {
     rule.condition.requestDomains = mergedArray;
@@ -42,10 +42,10 @@ export function updateRuleCondition(
     : [];
   const mergedWhitelistedSet = new Set([
     ...existingExcludedDomains,
-    ...whitelistedSites,
-    ...whitelistedSitesRemoved,
+    ...userWhitelistedDom,
+    ...userWhitelistedDomRem,
   ]);
-  whitelistedSitesRemoved.forEach((domain) =>
+  userWhitelistedDomRem.forEach((domain) =>
     mergedWhitelistedSet.delete(domain)
   );
   rule.condition.excludedRequestDomains = Array.from(mergedWhitelistedSet);
@@ -58,10 +58,10 @@ export function updateRuleCondition(
     : [];
   const mergedWhitelistedInitiatorSet = new Set([
     ...existingExcludedInitiatorDomains,
-    ...whitelistedSites,
-    ...whitelistedSitesRemoved,
+    ...userWhitelistedDom,
+    ...userWhitelistedDomRem,
   ]);
-  whitelistedSitesRemoved.forEach((domain) =>
+  userWhitelistedDomRem.forEach((domain) =>
     mergedWhitelistedInitiatorSet.delete(domain)
   );
   rule.condition.excludedInitiatorDomains = Array.from(

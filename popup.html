@@ -22,17 +22,38 @@
       </div>
     </div>
     <div class="content">
-      <div class="toggle-section">
-        <label>
-          <input type="checkbox" id="smoothStreamCheckbox" />
-          Smooth Stream and Download
-        </label>
+      <!-- Metrics Container -->
+      <div id="metricsContainer">
+        <h2 class="metrics-title">Ad Block Stats</h2>
+        <div class="metric">
+          <span class="metric-label">This Site (Lifetime):</span>
+          <span class="metric-value" id="siteBlockedMetric">0</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Today (Total):</span>
+          <span class="metric-value" id="dailyBlockedMetric">0</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Lifetime (Total):</span>
+          <span class="metric-value" id="lifetimeBlockedMetric">0</span>
+        </div>
       </div>
-      <div class="toggle-section">
-        <label>
-          <input type="checkbox" id="phishingCheckbox" />
-          Phishing Shield
-        </label>
+
+      <!-- Features Container -->
+      <div id="featuresContainer">
+        <h2 class="features-title">Features</h2>
+        <div class="feature-toggle">
+          <label>
+            <input type="checkbox" id="smoothStreamCheckbox" />
+            Smooth Stream and Download
+          </label>
+        </div>
+        <div class="feature-toggle">
+          <label>
+            <input type="checkbox" id="phishingCheckbox" />
+            Phishing Shield
+          </label>
+        </div>
       </div>
     </div>
     <script type="module" src="popup.js"></script>
