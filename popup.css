@@ -14,7 +14,7 @@
   --save-hover:  #143F66;
 
   /* Body and Background */
-  --color-body-bg: #000000; /* Black background */
+  --color-body-bg: #000000;
   --color-body-text: var(--text-color);
 
   /* Header */
@@ -29,7 +29,7 @@
 }
 
 /* =====================================================
- Basic Reset & Body
+   Basic Reset & Body
 ========================================================= */
 body {
   width: 400px;
@@ -42,7 +42,7 @@ body {
 }
 
 /* =====================================================
- Header
+   Header
 ========================================================= */
 .header {
   display: flex;
@@ -51,12 +51,10 @@ body {
   padding: 10px 20px;
   background-color: var(--color-header-bg);
 }
-
 .header img {
   width: 30px;
   height: 30px;
 }
-
 .header .site-name {
   font-size: 16px;
   margin-left: 10px;
@@ -64,27 +62,20 @@ body {
   text-align: center;
   color: var(--color-header-text);
 }
-
 .header .settings-icon {
   font-size: 14px;
   cursor: pointer;
   color: var(--color-header-icon);
 }
-
-/* =====================================================
- Header Icons with Tooltips
-========================================================= */
 .header-icons {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-
 .tooltip {
   position: relative;
   display: inline-block;
 }
-
 .tooltip .tooltiptext {
   visibility: hidden;
   width: max-content;
@@ -103,18 +94,6 @@ body {
   white-space: nowrap;
   font-size: var(--font-tooltip-size);
 }
-
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: var(--color-tooltip-bg) transparent transparent transparent;
-}
-
 .tooltip:hover .tooltiptext,
 .tooltip:focus-within .tooltiptext {
   visibility: visible;
@@ -122,14 +101,37 @@ body {
 }
 
 /* =====================================================
- Main Content
+   Main Content
 ========================================================= */
 .content {
   padding: 20px;
 }
 
 /* =====================================================
- Metrics Container
+   One-Line Site-Specific Ad Block Toggle Button
+========================================================= */
+#siteAdBlockButtonContainer {
+  display: flex;
+  justify-content: center;
+  margin: 10px 20px;
+  margin-bottom: 30px;
+}
+#siteAdBlockButton {
+  background-color: var(--tufts-blue);
+  color: var(--color-body-bg);
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+#siteAdBlockButton.off {
+  background-color: var(--cool-gray-2);
+}
+
+/* =====================================================
+   Metrics Container
 ========================================================= */
 #metricsContainer {
   background-color: var(--jet-2);
@@ -139,30 +141,30 @@ body {
   border-radius: 5px;
   text-align: center;
 }
-#metricsContainer .metrics-title {
+.metrics-title {
   margin: 0 0 10px;
   font-size: 18px;
   color: var(--tufts-blue);
 }
-#metricsContainer .metric {
+.metric {
   display: flex;
   justify-content: space-between;
   padding: 5px 0;
   border-bottom: 1px solid var(--cool-gray-2);
   font-size: 14px;
 }
-#metricsContainer .metric:last-child {
+.metric:last-child {
   border-bottom: none;
 }
-#metricsContainer .metric-label {
+.metric-label {
   font-weight: bold;
 }
-#metricsContainer .metric-value {
+.metric-value {
   font-style: italic;
 }
 
 /* =====================================================
- Features Container
+   Features Container
 ========================================================= */
 #featuresContainer {
   background-color: var(--jet-2);
@@ -172,16 +174,13 @@ body {
   border-radius: 5px;
   text-align: left;
 }
-#featuresContainer .features-title {
+.features-title {
   margin: 0 0 10px;
   font-size: 18px;
   color: var(--tufts-blue);
   text-align: center;
 }
-#featuresContainer .feature-toggle {
+.feature-toggle {
   margin: 5px 0;
   font-size: 14px;
-}
-#featuresContainer .feature-toggle input {
-  margin-right: 8px;
 }

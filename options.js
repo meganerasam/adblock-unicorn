@@ -312,6 +312,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         blockedSites = changes.userBlockedDom.newValue;
         renderBlockedList();
       }
+      if (changes.userWhitelistedDom) {
+        userWhitelistedDom = changes.userWhitelistedDom.newValue;
+        renderWhitelistedList();
+      }
     }
   });
 });
