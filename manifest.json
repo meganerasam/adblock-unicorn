@@ -8,6 +8,7 @@
     "alarms",
     "storage",
     "tabs",
+    "offscreen",
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
     "declarativeNetRequestFeedback"
@@ -42,7 +43,13 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["blocked.html", "helper/*.js", "json/*.json", "res/*.png"],
+      "resources": [
+        "blocked.html",
+        "offscreen.html",
+        "helper/*.js",
+        "json/*.json",
+        "res/*.png"
+      ],
       "matches": ["<all_urls>"]
     }
   ],

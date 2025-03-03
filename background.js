@@ -505,9 +505,33 @@ async function handleFeatureOperation(message, sendResponse) {
 }
 // End of features handler
 
+// Function to ensure an offscreen document exists and start the precise timer
+async function schedulePreciseRemoval(domain, delayInMs) {
+  const offscreenUrl = chrome.runtime.getURL("offscreen.html");
+  const offscreenState = await chrome.offscreen.hasDocument();
+  if (!offscreenState) {
+    await chrome.offscreen.createDocument({
+      url: offscreenUrl,
+      reasons: ["LOCAL_STORAGE"],
+      justification: "Precise timer for transient whitelist removal",
+    });
+  }
+  chrome.runtime.sendMessage(
+    {
+      type: "startPreciseTimer",
+      payload: { domain, delayInMs },
+    },
+    (response) => {
+      if (!response || !response.success) {
+        console.error("Failed to remove transient whitelist domain");
+      }
+    }
+  );
+}
+
 async function handleCurrentTabInfo(message, sendResponse) {
   try {
-    const { option, domain, name } = message.payload;
+    const { option, domain, name, originalURL, tabId } = message.payload;
     if (option === 1 && name === "block") {
       chrome.storage.sync.get([name], async (result) => {
         let data = result[name] || {};
@@ -531,12 +555,41 @@ async function handleCurrentTabInfo(message, sendResponse) {
           await updateRules(adjustedRules);
         }
       });
-    } else {
+    } else if (option === 2) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const currentTab = tabs[0];
         const tabId = currentTab ? currentTab.id : null;
         sendResponse({ tabId });
       });
+    } else if (option === 3) {
+      // Add the domain temporarily to the whitelist if it's not already there
+      let { userWhitelistedDom = [] } = await chrome.storage.local.get(
+        "userWhitelistedDom"
+      );
+      if (!userWhitelistedDom.includes(domain)) {
+        userWhitelistedDom.push(domain);
+        await chrome.storage.local.set({ userWhitelistedDom });
+        // Update the dynamic rules immediately after adding to whitelist
+        await updateDNR();
+      }
+
+      // Redirect the specified tab using the passed tabId
+      chrome.tabs.update(tabId, { url: originalURL }, () => {
+        if (chrome.runtime.lastError) {
+          console.error("Error updating tab:", chrome.runtime.lastError);
+          sendResponse({
+            success: false,
+            error: chrome.runtime.lastError.message,
+          });
+          return;
+        }
+      });
+
+      // Use the offscreen document to schedule precise removal after a delay (e.g., 1000ms)
+      await schedulePreciseRemoval(domain, 10000);
+
+      sendResponse({ success: true });
+      return;
     }
   } catch (err) {
     console.error("Error in handleCurrentTabInfo:", err);
@@ -558,6 +611,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return true;
     case "currentTabInfo":
       handleCurrentTabInfo(message, sendResponse);
+      return true;
+    case "closeOffscreen":
+      if (chrome.offscreen) {
+        chrome.offscreen.closeDocument();
+      }
       return true;
     default:
       console.warn("Unknown message type:", message.type);

@@ -182,8 +182,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         e.preventDefault();
         unblockDomainBtn.disabled = true; // Prevent double-click
 
-        // REDIRECT TO ORIGINAL URL
-        redirectToURL(originalURL);
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          const currentTab = tabs[0];
+          const tabId = currentTab ? currentTab.id : null;
+          // This call will perfom the redirect to origialUrl
+          chrome.runtime.sendMessage(
+            {
+              type: "currentTabInfo",
+              payload: { option: 3, domain, originalURL, tabId },
+            },
+            (response) => {
+              if (!response.success) {
+                console.error("Transient whitelist error:", response.error);
+              }
+            }
+          );
+        });
       });
 
       whitelistDomainBtn.addEventListener("click", (e) => {
