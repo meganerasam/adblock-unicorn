@@ -18,12 +18,12 @@ export function setStorage(storageArea, data) {
 }
 
 export async function updateStorageForKey(key, newValue) {
-  const storageArea = key.startsWith("u")
+  const storageArea = key.startsWith("back")
     ? chrome.storage.sync
     : chrome.storage.local;
   const result = await getStorage(storageArea, key);
   let mergedValue;
-  if (key.startsWith("u")) {
+  if (key.startsWith("back")) {
     mergedValue = newValue;
   } else {
     if (result && result[key] !== undefined) {

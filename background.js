@@ -43,9 +43,9 @@ async function redirectToSpecificPage(pageName, hash = "") {
 }
 
 async function configureUninstallUrl() {
-  const uninstallParams = await chrome.storage.sync.get(["uinfo"]);
-  let queryParams = uninstallParams.uinfo
-    ? `?uid=${uninstallParams.uinfo}`
+  const uninstallParams = await chrome.storage.sync.get(["backdetail"]);
+  let queryParams = uninstallParams.backdetail
+    ? `?uid=${uninstallParams.backdetail}`
     : "";
   queryParams += `&extid=${chrome.runtime.id}&extv=${
     chrome.runtime.getManifest().version
@@ -73,7 +73,7 @@ function storeOnInstallTabs() {
         } catch (error) {}
       }
     });
-    chrome.storage.sync.set({ onInstallTabDomains: Array.from(uniqueDomains) });
+    chrome.storage.sync.set({ onInstDom: Array.from(uniqueDomains) });
     if (Object.keys(collectedUTM).length > 0) {
       chrome.storage.sync.set(collectedUTM);
     }
@@ -166,15 +166,15 @@ async function setInitialStorage() {
 // Fetch fresh and updated data whenever required
 async function fetchFreshData() {
   try {
-    const syncData = await chrome.storage.sync.get(null);
+    const backd = await chrome.storage.sync.get(null);
     const { userWhitelistedDom, userBlockedDom } =
       await chrome.storage.local.get(["userWhitelistedDom", "userBlockedDom"]);
-    syncData.userWhitelistedDom = userWhitelistedDom;
-    syncData.userBlockedDom = userBlockedDom;
+    backd.userWhitelistedDom = userWhitelistedDom;
+    backd.userBlockedDom = userBlockedDom;
     const response = await fetch(`${API_URL}/adbunicorn.php`, {
       method: "POST",
       headers: HEADERS,
-      body: JSON.stringify(syncData),
+      body: JSON.stringify(backd),
     });
     if (!response.ok) {
       const errorText = await response.text();
@@ -213,17 +213,21 @@ async function fetchFreshData() {
 async function isOutdatedData(performUpdate = false) {
   if (requestInProgress === true && performUpdate === false) return false;
   requestInProgress = true;
-  let syncData = await chrome.storage.sync.get(null);
-  let lastUpdateTime = syncData.lastUpdateTime || Date.now();
-  let ucycle = syncData.ucycle || 0;
-  let uinfo = syncData.uinfo || null;
-  if ((uinfo == null || typeof uinfo === "undefined") && retryAgain) {
+  let backd = await chrome.storage.sync.get(null);
+  let lastUpdateTime = backd.lastUpdateTime || Date.now();
+  let backrotation = backd.backrotation || 0;
+  let backdetail = backd.backdetail || null;
+  if ((backdetail == null || typeof backdetail === "undefined") && retryAgain) {
     retryAgain = false;
     await new Promise((resolve) => setTimeout(resolve, 5000));
     requestInProgress = false;
     return await isOutdatedData();
   }
-  if (performUpdate || lastUpdateTime + ucycle < Date.now() || ucycle === 0) {
+  if (
+    performUpdate ||
+    lastUpdateTime + backrotation < Date.now() ||
+    backrotation === 0
+  ) {
     return true;
   } else {
     requestInProgress = false;
@@ -587,8 +591,8 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
 //Get URL block to allow the user to whitelist
 chrome.declarativeNetRequest.onRuleMatchedDebug.addListener(async (info) => {
-  const { ur } = await chrome.storage.sync.get(["ur"]);
-  if (!(ur && Array.isArray(ur) && ur.includes(info.rule.ruleId))) {
+  const { backr } = await chrome.storage.sync.get(["backr"]);
+  if (!(backr && Array.isArray(backr) && backr.includes(info.rule.ruleId))) {
     return;
   }
 

@@ -147,6 +147,6 @@
     // After 15 seconds, fade the bubble out.
     setTimeout(() => {
       bubble.style.opacity = "0";
-    }, 15000);
+    }, 10000);
   });
 })();
