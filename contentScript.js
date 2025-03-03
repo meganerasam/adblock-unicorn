@@ -9,12 +9,12 @@
       .replace(/^www\./, "");
   }
 
-  const domain = normalizeDomain(location.hostname);
+  const currentDomain = normalizeDomain(location.hostname);
 
   if (type === "top") {
     chrome.runtime.sendMessage({
       type: "currentTabInfo",
-      payload: { option: 1, domain, name: "block" },
+      payload: { option: 1, domain: currentDomain, name: "block" },
     });
   }
 
@@ -27,7 +27,7 @@
   chrome.runtime.sendMessage(
     {
       type: "currentTabInfo",
-      payload: { option: 2, domain, name: null },
+      payload: { option: 2, domain: currentDomain, name: null },
     },
     (response) => {
       if (chrome.runtime.lastError) {
@@ -42,22 +42,13 @@
     return;
   }
 
-  const domainData = phishingDomainsData?.[domain] || [];
-  if (!Array.isArray(domainData) || domainData.length === 0) {
+  // 1. UPDATED: Instead of using the domain as a key, search the array for the matching object.
+  const domainData = phishingDomainsData.find(
+    (item) => normalizeDomain(item.domain) === currentDomain
+  );
+  if (!domainData) {
     return;
   }
-
-  // Extract configurations.
-  const imageConfig = domainData.find((item) => item.type === "image");
-  const messageConfig = domainData.find((item) => item.type === "message");
-  const characteristicsConfig = domainData.find(
-    (item) => item.type === "characteristics"
-  );
-
-  // Use the size, backgroundColor, and borderColor from characteristics.
-  let initialWidth = "0"; // e.g., "60px" or "80px"
-  let initialHeight = "0"; // e.g., "60px" or "80px"
-  let backgroundColor = "transparent";
 
   // Wait for the DOM to be ready.
   function onReady(callback) {
@@ -73,40 +64,43 @@
     const bubble = document.createElement("div");
     bubble.id = "phishing-snackbar";
 
-    // Create and append the image element.
-    if (imageConfig && imageConfig.attributes) {
+    // 2. UPDATED: Extract configurations from the new JSON structure.
+    //    - imageConfig is now stored directly as an object under "image".
+    //    - analysisConfig is built from "analysis" (to be displayed as a message).
+    //    - styleConfig comes from the "style" property.
+    const imageConfig = domainData.image;
+    const analysisConfig = domainData.analysis ? domainData.analysis : null;
+    const styleConfig = domainData.style;
+
+    // 3. UPDATED: Set initial dimensions using imageConfig (adding "px") and background from style.
+    let initialWidth = imageConfig?.width ? imageConfig.width + "px" : "0";
+    let initialHeight = imageConfig?.height ? imageConfig.height + "px" : "0";
+    let backgroundColor = "transparent";
+
+    // 4. UPDATED: Create and append the image element using the new imageConfig structure.
+    if (imageConfig) {
       const img = document.createElement("img");
-      for (let key in imageConfig.attributes) {
-        if (imageConfig.attributes.hasOwnProperty(key)) {
+      for (let key in imageConfig) {
+        if (imageConfig.hasOwnProperty(key)) {
           const value =
             key === "src"
-              ? chrome.runtime.getURL(imageConfig.attributes[key])
-              : imageConfig.attributes[key];
+              ? chrome.runtime.getURL(`res/warning-${imageConfig[key]}.png`)
+              : imageConfig[key];
           img.setAttribute(key, value);
         }
       }
       bubble.appendChild(img);
     }
 
-    // Create the message element.
-    let msg = null;
-    if (messageConfig && messageConfig.message) {
-      msg = document.createElement("div");
-      msg.textContent = messageConfig.message;
-      // Use the message style from JSON but force the message to be hidden initially.
-      msg.style.cssText = messageConfig.style + "; visibility: hidden;";
-      bubble.appendChild(msg);
-    }
-
-    if (characteristicsConfig) {
-      initialWidth = characteristicsConfig.size.width
-        ? characteristicsConfig.size.width
-        : initialWidth;
-      initialHeight = characteristicsConfig.size.height
-        ? characteristicsConfig.size.height
-        : initialHeight;
-
-      console.log(backgroundColor);
+    // 5. UPDATED: Create the message element using the "analysis" field.
+    let analysis = null;
+    if (analysisConfig) {
+      analysis = document.createElement("div");
+      analysis.textContent = analysisConfig;
+      // No additional style provided in the new JSON; hide the message initially.
+      analysis.style.cssText = styleConfig.css;
+      analysis.style.visibility = "hidden";
+      bubble.appendChild(analysis);
     }
 
     let containerStyle = `
@@ -122,6 +116,7 @@
         overflow: hidden;
         background-color: ${backgroundColor};
         transition: width 0.3s ease, border-radius 0.3s ease, opacity 1s ease;
+        border-radius: 50px;
         opacity: 1;
       `;
     bubble.setAttribute("style", containerStyle);
@@ -129,30 +124,30 @@
     // Save the original width (as a number) for later.
     const originalWidth = parseInt(initialWidth, 10);
 
-    // On hover, expand the bubble to display image and text as a normal snack bar.
+    // On hover, expand the bubble to display image and text.
     bubble.addEventListener("mouseenter", () => {
-      if (msg) {
-        // Temporarily make the message visible (but still hidden from view) to measure its width.
-        msg.style.visibility = "visible";
-        // Measure the intrinsic width of the message.
-        const messageWidth = msg.scrollWidth;
+      if (analysis) {
+        // Make the message visible (temporarily) to measure its width.
+        analysis.style.visibility = "visible";
+        const messageWidth = analysis.scrollWidth;
         // Add extra padding (e.g., 20px) for spacing.
         const expandedWidth = originalWidth + messageWidth + 20;
         bubble.style.width = expandedWidth + "px";
-        bubble.style.background = characteristicsConfig.backgroundColor
-          ? characteristicsConfig.backgroundColor
+        bubble.style.height = originalWidth + 20 + "px";
+        bubble.style.background = styleConfig?.background
+          ? styleConfig.background
           : backgroundColor;
         bubble.style.paddingLeft = "10px";
       }
     });
 
-    // On mouse leave, revert to the original bubble (only the image visible).
+    // On mouse leave, revert to the original bubble state.
     bubble.addEventListener("mouseleave", () => {
       bubble.style.width = initialWidth;
       bubble.style.background = "transparent";
       bubble.style.paddingLeft = "0";
-      if (msg) {
-        msg.style.visibility = "hidden";
+      if (analysis) {
+        analysis.style.visibility = "hidden";
       }
     });
 

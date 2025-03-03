@@ -124,11 +124,11 @@ async function loadPhishingDom() {
       chrome.storage.local.set({ phishingDomainsData: [] });
     } else {
       const phishingDomainsResponse = await fetchJSONFile(
-        "phishingDomains.json"
+        "phishing-domains.json"
       );
       if (phishingDomainsResponse) {
         chrome.storage.local.set({
-          phishingDomainsData: phishingDomainsResponse.phishingDomains,
+          phishingDomainsData: phishingDomainsResponse.domains,
         });
       }
     }
@@ -145,15 +145,11 @@ async function loadAdsDom() {
     const { adBlockingEnabled } = await chrome.storage.local.get([
       "adBlockingEnabled",
     ]);
-    if (!adBlockingEnabled) {
-      // Do nothing if ad blocking is disabled
-    } else {
-      const adDomainsResponse = await fetchJSONFile("adDomains.json");
-      if (adDomainsResponse) {
-        chrome.storage.local.set({
-          adDomainsData: adDomainsResponse.adDomains,
-        });
-      }
+    const adDomainsResponse = await fetchJSONFile("ads-domains.json");
+    if (adDomainsResponse) {
+      chrome.storage.local.set({
+        adDomainsData: adDomainsResponse.domains,
+      });
     }
   } catch (err) {
     // Handle error
