@@ -1,3 +1,4 @@
+//popup,js
 document.addEventListener("DOMContentLoaded", () => {
   const smoothStreamCheckbox = document.getElementById("smoothStreamCheckbox");
   const phishingCheckbox = document.getElementById("phishingCheckbox");

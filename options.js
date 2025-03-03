@@ -1,7 +1,4 @@
-/************************************************************
- * options.js
- ************************************************************/
-
+//options.js
 import { normalizeDomain } from "./helper/util.js";
 import {
   toggleAddForm,
@@ -48,14 +45,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const filtersTab = document.getElementById("filtersTab");
   const featuresTab = document.getElementById("featuresTab");
 
+  // -------------------------------
   // Content Sections for Tabs
+  // -------------------------------
   const filtersContent = document.getElementById("filtersContent");
   const featuresContent = document.getElementById("featuresContent");
 
   // -------------------------------
   // Checkbox Elements (Ad‑Blocking, Auto Close, Phishing)
   // -------------------------------
-  // const adBlockingCheckbox = document.getElementById("adBlockingToggle");
   const disturbanceCheckbox = document.getElementById("disturbanceCheckbox");
   const phishingCheckbox = document.getElementById("phishingCheckbox");
 

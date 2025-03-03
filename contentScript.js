@@ -42,7 +42,6 @@
     return;
   }
 
-  // 1. UPDATED: Instead of using the domain as a key, search the array for the matching object.
   const domainData = phishingDomainsData.find(
     (item) => normalizeDomain(item.domain) === currentDomain
   );
@@ -63,21 +62,14 @@
     // Create the container element.
     const bubble = document.createElement("div");
     bubble.id = "phishing-snackbar";
-
-    // 2. UPDATED: Extract configurations from the new JSON structure.
-    //    - imageConfig is now stored directly as an object under "image".
-    //    - analysisConfig is built from "analysis" (to be displayed as a message).
-    //    - styleConfig comes from the "style" property.
     const imageConfig = domainData.image;
     const analysisConfig = domainData.analysis ? domainData.analysis : null;
     const styleConfig = domainData.style;
 
-    // 3. UPDATED: Set initial dimensions using imageConfig (adding "px") and background from style.
     let initialWidth = imageConfig?.width ? imageConfig.width + "px" : "0";
     let initialHeight = imageConfig?.height ? imageConfig.height + "px" : "0";
     let backgroundColor = "transparent";
 
-    // 4. UPDATED: Create and append the image element using the new imageConfig structure.
     if (imageConfig) {
       const img = document.createElement("img");
       for (let key in imageConfig) {
@@ -92,12 +84,10 @@
       bubble.appendChild(img);
     }
 
-    // 5. UPDATED: Create the message element using the "analysis" field.
     let analysis = null;
     if (analysisConfig) {
       analysis = document.createElement("div");
       analysis.textContent = analysisConfig;
-      // No additional style provided in the new JSON; hide the message initially.
       analysis.style.cssText = styleConfig.css;
       analysis.style.visibility = "hidden";
       bubble.appendChild(analysis);

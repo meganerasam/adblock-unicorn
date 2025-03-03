@@ -1,11 +1,4 @@
-/************************************************************
- * blocked.js
- ************************************************************/
-
-/**
- * Parses the query parameters from the current URL.
- * @returns {Object} An object containing key-value pairs of query parameters.
- */
+//blocked.js
 function parseQueryParams() {
   const params = {};
   const queryString = window.location.search.substring(1);
@@ -18,18 +11,10 @@ function parseQueryParams() {
   });
   return params;
 }
-
-/**
- * Redirects the current tab to the specified URL.
- * @param {string} targetURL - The URL to redirect to.
- */
 function redirectToURL(targetURL) {
   window.location.replace(targetURL);
 }
 
-/************************************************************
- * Helper function to normalize domain input
- ************************************************************/
 function normalizeDomainInput(userInput) {
   if (!userInput) return "";
   let temp = userInput.trim();
@@ -66,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.close();
     return;
   }
-  // Check if the domain is already permanently blocked
+  // Check if the domain is already user domain blocked list
   else if (domain) {
     await chrome.storage.local.get("userBlockedDom", (result) => {
       const userBlockedDom = result.userBlockedDom || [];
@@ -81,55 +66,53 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function initializePage() {
-    // Set header text (plain text only)
     const headerEl = document.querySelector("h1");
     if (headerEl) {
       headerEl.textContent = chrome.i18n.getMessage("blockedPageTitle");
     }
 
     // Build the blocked message in the paragraph element
-    // const paragraphEl = document.querySelector("p");
     const paragraphEl = document.getElementById("first");
     paragraphEl.textContent = "";
     const textBefore = document.createTextNode(
-      chrome.i18n.getMessage("blockedTextBefore") + ' "'
+      chrome.i18n.getMessage("blockedTextBeforeUrl") + ' "'
     );
     const boldDomain = document.createElement("strong");
     boldDomain.textContent = domain;
     const textAfter = document.createTextNode(
-      '" ' + chrome.i18n.getMessage("blockedTextAfter")
+      '" ' + chrome.i18n.getMessage("blockedTextAfterUrl")
     );
     paragraphEl.appendChild(textBefore);
     paragraphEl.appendChild(boldDomain);
     paragraphEl.appendChild(textAfter);
 
-    // Build the blocked message in the paragraph element
-    const paragraphEl2 = document.getElementById("second");
-    paragraphEl2.textContent = "";
+    // Build the additional blocked message in the paragraph element
+    const paragraphElAdditional = document.getElementById("second");
+    paragraphElAdditional.textContent = "";
     const textBefore2 = document.createTextNode(
-      chrome.i18n.getMessage("blockedTextBefore2")
+      chrome.i18n.getMessage("blockedTextAfterUrlAdditional")
     );
-    paragraphEl2.appendChild(textBefore2);
+    paragraphElAdditional.appendChild(textBefore2);
 
     /***************************************************
-     * Primary action: Auto close ALL ads and popups
+     * Primary action: Smooth Stream and Download
      ***************************************************/
-    const closeAllPopupsBtn = document.getElementById("closeAllPopupsBtn");
+    const ssdBtn = document.getElementById("ssdBtn");
 
     let secondsLeft = 10;
-    closeAllPopupsBtn.textContent = `${chrome.i18n.getMessage(
-      "autoCloseAllMessage"
+    ssdBtn.textContent = `${chrome.i18n.getMessage(
+      "ssdText"
     )} (${secondsLeft}s)`;
 
     const timer = setInterval(() => {
       secondsLeft--;
-      closeAllPopupsBtn.textContent = `${chrome.i18n.getMessage(
-        "autoCloseAllMessage"
+      ssdBtn.textContent = `${chrome.i18n.getMessage(
+        "ssdText"
       )} (${secondsLeft}s)`;
       if (secondsLeft <= 0) {
         clearInterval(timer);
 
-        // Send a message to the background script to auto close all popups
+        // Send a message to the background script to set SSD
         chrome.runtime.sendMessage(
           {
             type: "featureOperation",
@@ -151,12 +134,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }, 1000);
 
-    closeAllPopupsBtn.addEventListener("click", (e) => {
+    ssdBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      closeAllPopupsBtn.disabled = true; // Prevent double-click
+      ssdBtn.disabled = true; // Prevent double-click
       clearInterval(timer);
 
-      // Send a message to the background script to auto close all popups
+      // Send a message to the background script to set SSD
       chrome.runtime.sendMessage(
         {
           type: "featureOperation",
@@ -184,16 +167,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.querySelector(".domain-block-options").style.display = "flex";
       const unblockDomainText = document.getElementById("unblockDomainText");
       unblockDomainText.style.display = "inline-block";
-      // Hardcoded text with the domain in bold—no i18n key available for this line.
       unblockDomainText.innerHTML = `Unblock anyway: `;
 
       const unblockDomainBtn = document.getElementById("unblockDomainBtn");
       unblockDomainBtn.textContent = `${chrome.i18n.getMessage(
-        "unblockSiteNowMessage"
+        "navigateOnce"
       )}`;
       const whitelistDomainBtn = document.getElementById("whitelistDomainBtn");
       whitelistDomainBtn.textContent = `${chrome.i18n.getMessage(
-        "unblockSiteAlwaysMessage"
+        "whitelisteForeverText"
       )}`;
 
       unblockDomainBtn.addEventListener("click", (e) => {

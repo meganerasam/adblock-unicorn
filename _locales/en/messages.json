@@ -1,6 +1,6 @@
 {
   "appDesc": {
-    "message": "Stops annoying popup ads and a list of advertising scripts."
+    "message": "Eliminate annoying popup ads and stop advertising scripts."
   },
   "appName": {
     "message": "Ad Block Unicorn"
@@ -11,32 +11,23 @@
   "goToSettings": {
     "message": "Go to Ad Block Unicorn settings"
   },
-  "blockedTextBefore": {
+  "blockedTextBeforeUrl": {
     "message": "This is purely an ad."
   },
-  "blockedTextAfter": {
+  "blockedTextAfterUrl": {
     "message": "is a verified ad network."
   },
-  "blockedTextBefore2": {
+  "blockedTextAfterUrlAdditional": {
     "message": "Clicking won’t get you your file or stream."
   },
-  "closeTabMessage": {
-    "message": "Close tab"
-  },
-  "autoCloseAllMessage": {
+  "ssdText": {
     "message": "Block all popups"
   },
-  "blockForeverMessage": {
-    "message": "Auto close"
-  },
-  "unblockSiteNowMessage": {
+  "navigateOnce": {
     "message": "Once"
   },
-  "unblockSiteAlwaysMessage": {
+  "whitelisteForeverText": {
     "message": "Forever"
-  },
-  "blockForeverError": {
-    "message": "Failed to block the site forever. Please try again."
   },
   "unblockError": {
     "message": "Failed to unblock the site. Please try again."
